@@ -79,12 +79,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         UserDetails userDetails = this.loadUserByUsername(username);
 
-        // --- LOGS PARA DEBUGEAR ---
-        System.out.println("1. Password que mandó Postman: [" + password + "]");
-        System.out.println("2. Hash que vino de la base de datos: [" + userDetails.getPassword() + "]");
-        System.out.println("3. ¿Cómo debería verse el hash de 123456 hoy?: [" + passwordEncoder.encode(password) + "]");
-        // -------------------------
-
         if(userDetails == null) {
             throw new BadCredentialsException("Invalid username or password");
         }

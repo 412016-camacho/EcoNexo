@@ -1,7 +1,7 @@
 package com.tfi.Econexo.security.config;
 
 import com.tfi.Econexo.utils.JwtUtils;
-import com.tfi.Econexo.utils.filter.JwtTokenValidator;
+import com.tfi.Econexo.security.config.filter.JwtTokenValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

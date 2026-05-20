@@ -1,0 +1,105 @@
+package com.tfi.Econexo.controller.auth;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tfi.Econexo.config.AuditorAwareImpl;
+import com.tfi.Econexo.dto.AuthLoginRequestDTO;
+import com.tfi.Econexo.dto.AuthResponseDTO;
+import com.tfi.Econexo.service.PermissionService;
+import com.tfi.Econexo.service.RoleService;
+import com.tfi.Econexo.service.UserService;
+import com.tfi.Econexo.service.impl.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+
+@WebMvcTest(AuthenticationController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuditorAwareImpl.class))
+class AuthenticationControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private UserDetailsServiceImpl userDetailsService;
+
+    @MockitoBean
+    private PermissionService permissionService;
+
+    @MockitoBean
+    private RoleService roleService;
+
+    @MockitoBean
+    private UserService userService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Test
+    void loginUser_success() throws Exception {
+        String json = objectMapper.writeValueAsString(new AuthLoginRequestDTO("test@mail.com", "123456"));
+
+        when(userDetailsService.loginUser(any(AuthLoginRequestDTO.class))).thenReturn(
+                new AuthResponseDTO("test@mail.com", "login successful", "token", true));
+
+        mockMvc.perform(
+                post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.jwt").value("token"))
+                .andExpect(jsonPath("$.email").value("test@mail.com"));
+    }
+
+    @Test
+    void loginUser_Unauthorized() throws Exception {
+        String json = objectMapper.writeValueAsString(new AuthLoginRequestDTO("test@mail.com", "123456"));
+
+        when(userDetailsService.loginUser(any(AuthLoginRequestDTO.class))).thenThrow(
+                new BadCredentialsException("Invalid credentials")
+        );
+
+        mockMvc.perform(
+                        post("/api/v1/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void loginUser_badRequest() throws Exception {
+        String json = """
+                {
+                 "password": "123456"
+                }
+                """;
+
+        mockMvc.perform(
+                        post("/api/v1/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
+                .andExpect(status().isBadRequest());
+    }
+}

@@ -1,4 +1,4 @@
-package com.tfi.Econexo.utils.filter;
+package com.tfi.Econexo.security.config.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.tfi.Econexo.utils.JwtUtils;
