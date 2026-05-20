@@ -3,6 +3,11 @@ package com.tfi.Econexo.controller.auth;
 import com.tfi.Econexo.dto.AuthLoginRequestDTO;
 import com.tfi.Econexo.dto.AuthResponseDTO;
 import com.tfi.Econexo.service.impl.UserDetailsServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,11 +20,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "Endpoints to login and handle security tokens")
 public class AuthenticationController {
 
     private final UserDetailsServiceImpl userDetailsService;
 
     @PostMapping("/login")
+    @Operation(summary = "User login",
+            description = "Authenticate user credentials (email and password). If correct, generates and returns a JWT token along with the corresponding roles.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully authentication. Returns a valid JWT token",
+                    content = @Content
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request",
+                    content =  @Content
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Invalid credentials. Returns an error message",
+                    content = @Content
+            )
+    })
     public ResponseEntity<AuthResponseDTO> login (@RequestBody @Valid AuthLoginRequestDTO userRequest) {
         return new ResponseEntity<>(this.userDetailsService.loginUser(userRequest), HttpStatus.OK);
 
