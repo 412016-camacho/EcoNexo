@@ -1,0 +1,36 @@
+package com.tfi.Econexo.mappers;
+
+import com.tfi.Econexo.dto.DonorRegistrationDTO;
+import com.tfi.Econexo.dto.DonorResponseDTO;
+import com.tfi.Econexo.model.auth.UserSec;
+import com.tfi.Econexo.model.donation.Donor;
+import com.tfi.Econexo.model.location.Neighborhood;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+@Mapper(componentModel = "spring")
+public interface DonorMapper {
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", source = "user")
+    @Mapping(target = "neighborhood", source = "neighborhood")
+    @Mapping(target = "donorType", source = "dto.donorType")
+    @Mapping(target = "location", expression = "java(createPoint(dot.longitude(), dto.latitude()))")
+    Donor toEntity(DonorRegistrationDTO dto, UserSec user, Neighborhood neighborhood);
+
+    @Mapping(target = "neighborhoodId", source = "donor.neighborhood.id")
+    @Mapping(target = "email", source = "donor.user.email")
+    DonorResponseDTO toResponseDTO(Donor donor);
+
+    default Point createPoint(Double longitude, Double latitude) {
+        if(longitude == null || latitude == null){
+            return null;
+        }
+        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+        return geometryFactory.createPoint(new Coordinate(longitude, latitude));
+    }
+}

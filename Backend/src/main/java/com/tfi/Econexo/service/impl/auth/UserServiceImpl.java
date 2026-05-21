@@ -1,8 +1,8 @@
-package com.tfi.Econexo.service.impl;
+package com.tfi.Econexo.service.impl.auth;
 
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.repository.auth.UserRepository;
-import com.tfi.Econexo.service.UserService;
+import com.tfi.Econexo.service.auth.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.tfi.Econexo.service.impl;
+package com.tfi.Econexo.service.impl.auth;
 
 import com.tfi.Econexo.dto.AuthLoginRequestDTO;
 import com.tfi.Econexo.dto.AuthResponseDTO;

@@ -1,4 +1,4 @@
-package com.tfi.Econexo.service;
+package com.tfi.Econexo.service.auth;
 
 import com.tfi.Econexo.model.auth.Role;
 
@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface RoleService {
     List<Role> findAll();
     Optional<Role> findById(Long id);
+    Optional<Role> findByName(String name);
     Role save(Role role);
     void deleteById(Long id);
     Role update(Role role);

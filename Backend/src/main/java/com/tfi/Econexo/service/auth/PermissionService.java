@@ -1,4 +1,4 @@
-package com.tfi.Econexo.service;
+package com.tfi.Econexo.service.auth;
 
 import com.tfi.Econexo.model.auth.Permission;
 

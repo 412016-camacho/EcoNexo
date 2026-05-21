@@ -2,7 +2,7 @@ package com.tfi.Econexo.controller.auth;
 
 import com.tfi.Econexo.dto.AuthLoginRequestDTO;
 import com.tfi.Econexo.dto.AuthResponseDTO;
-import com.tfi.Econexo.service.impl.UserDetailsServiceImpl;
+import com.tfi.Econexo.service.impl.auth.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

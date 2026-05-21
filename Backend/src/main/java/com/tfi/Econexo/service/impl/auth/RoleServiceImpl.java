@@ -1,8 +1,8 @@
-package com.tfi.Econexo.service.impl;
+package com.tfi.Econexo.service.impl.auth;
 
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.repository.auth.RoleRepository;
-import com.tfi.Econexo.service.RoleService;
+import com.tfi.Econexo.service.auth.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +24,9 @@ public class RoleServiceImpl implements RoleService {
     public Optional<Role> findById(Long id) {
         return roleRepository.findById(id);
     }
+
+    @Override
+    public Optional<Role> findByName(String name) {return roleRepository.findByRole(name);}
 
     @Override
     public Role save(Role role) {

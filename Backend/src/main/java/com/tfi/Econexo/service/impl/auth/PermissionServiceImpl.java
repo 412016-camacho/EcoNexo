@@ -1,8 +1,8 @@
-package com.tfi.Econexo.service.impl;
+package com.tfi.Econexo.service.impl.auth;
 
 import com.tfi.Econexo.model.auth.Permission;
 import com.tfi.Econexo.repository.auth.PermissionRepository;
-import com.tfi.Econexo.service.PermissionService;
+import com.tfi.Econexo.service.auth.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

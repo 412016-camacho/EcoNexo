@@ -2,8 +2,8 @@ package com.tfi.Econexo.controller.auth;
 
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.auth.UserSec;
-import com.tfi.Econexo.service.RoleService;
-import com.tfi.Econexo.service.UserService;
+import com.tfi.Econexo.service.auth.RoleService;
+import com.tfi.Econexo.service.auth.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
