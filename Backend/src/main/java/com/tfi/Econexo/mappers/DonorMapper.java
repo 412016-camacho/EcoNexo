@@ -16,10 +16,16 @@ import org.mapstruct.Mapping;
 public interface DonorMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "updatedDate", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "active", ignore = true)
     @Mapping(target = "user", source = "user")
     @Mapping(target = "neighborhood", source = "neighborhood")
     @Mapping(target = "donorType", source = "dto.donorType")
-    @Mapping(target = "location", expression = "java(createPoint(dot.longitude(), dto.latitude()))")
+    @Mapping(target = "location", expression = "java(createPoint(dto.longitude(), dto.latitude()))")
     Donor toEntity(DonorRegistrationDTO dto, UserSec user, Neighborhood neighborhood);
 
     @Mapping(target = "neighborhoodId", source = "donor.neighborhood.id")
