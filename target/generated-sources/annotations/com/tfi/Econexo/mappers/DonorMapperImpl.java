@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-21T13:07:52-0300",
+    date = "2026-05-21T17:08:30-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -35,9 +35,7 @@ public class DonorMapperImpl implements DonorMapper {
             donor.setPhoneNumber( dto.phoneNumber() );
             donor.setStreet( dto.street() );
             donor.setStreetNumber( dto.streetNumber() );
-            if ( dto.floor() != null ) {
-                donor.setFloor( dto.floor() );
-            }
+            donor.setFloor( dto.floor() );
             donor.setApartment( dto.apartment() );
         }
         donor.setUser( user );
@@ -62,7 +60,7 @@ public class DonorMapperImpl implements DonorMapper {
         String phoneNumber = null;
         String street = null;
         String streetNumber = null;
-        Integer floor = null;
+        String floor = null;
         String apartment = null;
 
         neighborhoodId = donorNeighborhoodId( donor );
