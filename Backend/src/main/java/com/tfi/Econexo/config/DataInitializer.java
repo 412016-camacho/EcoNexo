@@ -30,6 +30,7 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+
         Role adminRole = getOrCreateRole("ADMIN");
         Role donorRole = getOrCreateRole("DONOR");
         Role ngoRole = getOrCreateRole("NGO");
@@ -64,6 +65,12 @@ public class DataInitializer implements CommandLineRunner {
             Neighborhood gralPaz = new  Neighborhood();
             gralPaz.setName("General Paz");
             gralPaz.setCity(cordoba);
+
+            Neighborhood centro = new Neighborhood();
+            centro.setName("Centro");
+
+            Neighborhood altaCordoba = new Neighborhood();
+            altaCordoba.setName("Alta Córdoba");
 
             neighborhoodRepository.saveAll(List.of(nvaCba, gralPaz));
             System.out.println("[DataInitializer] Ciudades y Barrios base creados con éxito.");
