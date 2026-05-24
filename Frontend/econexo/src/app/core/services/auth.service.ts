@@ -8,6 +8,7 @@ import {
   NeighborhoodLookup
 } from '../../shared/models/donor.model';
 import {Observable} from 'rxjs';
+import {AuthLoginRequest, AuthResponse} from '../../shared/models/login.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class AuthService {
 
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl =`${environment.apiUrl}/v1/auth/register/donor`;
+  private readonly apiUrl =`${environment.apiUrl}/v1/auth`;
   private readonly neighborhoodsUrl =`${environment.apiUrl}/v1/neighborhoods/public`;
   private readonly donorsUrl =`${environment.apiUrl}/v1/donors/public/donor-types`;
 
@@ -26,7 +27,7 @@ export class AuthService {
    * @returns An Observable of the registered donor
    */
   registerDonor(donorData: DonorRegistrationRequest): Observable<DonorResponse> {
-    return this.http.post<DonorResponse>(this.apiUrl, donorData);
+    return this.http.post<DonorResponse>(`${this.apiUrl}/register/donor`, donorData);
   }
 
   /**
@@ -43,5 +44,14 @@ export class AuthService {
    */
   getDonorTypes(): Observable<DonorTypeLookup[]> {
     return this.http.get<DonorTypeLookup[]>(this.donorsUrl);
+  }
+
+  /**
+   * Login a user
+   * @param credentials - The user credentials
+   * @returns An Observable of the login response
+   */
+  login(credentials: AuthLoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials);
   }
 }

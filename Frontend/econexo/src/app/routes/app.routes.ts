@@ -1,3 +1,16 @@
 import { Routes } from '@angular/router';
+import {LoginComponent} from '../features/auth/login/login.component';
+import {RoleSelectionComponent} from '../features/auth/role-selection/role-selection.component';
+import {DonorFormComponent} from '../features/auth/donor-form/donor-form.component';
+import {DashboardDonorComponent} from '../features/dashboard/dashboard-donor/dashboard-donor.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: 'register/role', component: RoleSelectionComponent },
+  { path: 'register/donor', component: DonorFormComponent },
+  //{ path: 'register/driver', component: DriverFormComponent },
+  //{ path: 'register/ngo', component: NgoFormComponent },
+  { path: 'dashboard/donor', component: DashboardDonorComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '**', redirectTo: 'login' }
+];

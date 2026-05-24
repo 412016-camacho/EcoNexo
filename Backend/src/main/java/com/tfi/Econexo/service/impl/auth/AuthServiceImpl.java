@@ -2,6 +2,7 @@ package com.tfi.Econexo.service.impl.auth;
 
 import com.tfi.Econexo.dto.DonorRegistrationDTO;
 import com.tfi.Econexo.dto.DonorResponseDTO;
+import com.tfi.Econexo.exception.ConflictException;
 import com.tfi.Econexo.mappers.DonorMapper;
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.auth.UserSec;
@@ -40,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if (donorService.findByEmail(donorDTO.email()) || donorService.findByTaxId(donorDTO.taxId())) {
-            throw new IllegalArgumentException("Donor already exists");
+            throw new ConflictException("Donor already exists");
         }
 
         Role role = roleService.findByName("DONOR").orElseThrow(() -> new EntityNotFoundException("Role DONOR not found"));

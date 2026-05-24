@@ -46,6 +46,12 @@ public class GlobalHandlerException {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorApi> handleError(ConflictException ex) {
+        ErrorApi error = buildError(ex.getMessage(), HttpStatus.CONFLICT);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     private ErrorApi buildError(String message, HttpStatus status) {
         return ErrorApi.builder()
                 .timestamp(String.valueOf(Timestamp.from(ZonedDateTime.now().toInstant())))
