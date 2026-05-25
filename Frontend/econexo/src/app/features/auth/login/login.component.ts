@@ -5,6 +5,7 @@ import {AuthService} from '../../../core/services/auth.service';
 import {ToastrService} from 'ngx-toastr';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {NgClass} from '@angular/common';
+import {BaseFormComponent} from "../../../shared/utils/base-form.component";
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ import {NgClass} from '@angular/common';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent extends BaseFormComponent implements OnInit{
 
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
@@ -23,25 +24,15 @@ export class LoginComponent implements OnInit{
   loginForm!: FormGroup;
   isSubmitting = false;
 
+  get form() {
+    return this.loginForm;
+  }
+
   ngOnInit(){
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     })
-  }
-
-  isInvalidField(field: string){
-    const control = this.loginForm.get(field);
-    return !!(control && control.invalid && (control.dirty || control.touched));
-  }
-
-  getErrorMessage(field: string) {
-    const control = this.loginForm.get(field);
-    if (control && control.errors && (control.dirty || control.touched)) {
-      if (control.errors['required']) return 'Este campo es obligatorio.';
-      if (control.errors['email']) return 'El formato del email no es válido.';
-    }
-    return ''
   }
 
   onSubmit() {
