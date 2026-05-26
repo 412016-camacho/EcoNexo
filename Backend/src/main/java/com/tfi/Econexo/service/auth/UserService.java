@@ -11,5 +11,6 @@ public interface UserService {
     UserSec save(UserSec user);
     void deleteById(Long id);
     UserSec update(UserSec user);
-    public String encryptPassword(String password);
+    String encryptPassword(String password);
+    Optional<UserSec> findByEmail(String email);
 }
