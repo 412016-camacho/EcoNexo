@@ -9,6 +9,7 @@ import com.tfi.Econexo.mappers.DonorMapper;
 import com.tfi.Econexo.mappers.NgoMapper;
 import com.tfi.Econexo.mappers.UserMapper;
 import com.tfi.Econexo.model.auth.Role;
+import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.Donor;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.model.ngo.Ngo;
@@ -152,7 +153,7 @@ class AuthServiceImplTest {
 
     @Test
     void registerDonor_success() {
-        when(donorService.findByEmail(anyString())).thenReturn(false);
+        when(userService.findByEmail(anyString())).thenReturn(Optional.empty());
         when(donorService.findByTaxId(anyString())).thenReturn(false);
         when(roleService.findByName(anyString())).thenReturn(Optional.of(role));
         when(neighborhoodService.findById(anyLong())).thenReturn(Optional.of(alberdi));
@@ -169,7 +170,7 @@ class AuthServiceImplTest {
 
     @Test
     void registerDonor_ThrowsException_WhenEmailExists() {
-        when(donorService.findByEmail(anyString())).thenReturn(true);
+        when(userService.findByEmail(anyString())).thenReturn(Optional.of(new UserSec()));
 
         assertThrows(ConflictException.class, () -> authService.registerDonor(donorDTO));
     }
@@ -190,7 +191,7 @@ class AuthServiceImplTest {
 
     @Test
     void registerDonor_ThrowsException_WhenNeighborhoodNotFound(){
-        when(donorService.findByEmail(anyString())).thenReturn(false);
+        when(userService.findByEmail(anyString())).thenReturn(Optional.empty());
         when(donorService.findByTaxId(anyString())).thenReturn(false);
         when(roleService.findByName(anyString())).thenReturn(Optional.of(role));
         when(neighborhoodService.findById(anyLong())).thenReturn(Optional.empty());
@@ -200,7 +201,7 @@ class AuthServiceImplTest {
 
     @Test
     void registerNgo_success() {
-        when(ngoService.existsEmail(anyString())).thenReturn(false);
+        when(userService.findByEmail(anyString())).thenReturn(Optional.empty());
         when(ngoService.findByTaxId(anyString())).thenReturn(Optional.empty());
         when(ngoService.findByLegalPersonalityNumber(anyString())).thenReturn(Optional.empty());
         when(neighborhoodService.findById(anyLong())).thenReturn(Optional.of(alberdi));
@@ -219,7 +220,7 @@ class AuthServiceImplTest {
 
     @Test
     void registerNgo_ThrowsException_WhenEmailExists() {
-        when(ngoService.existsEmail(anyString())).thenReturn(true);
+        when(userService.findByEmail(anyString())).thenReturn(Optional.of(new UserSec()));
 
         assertThrows(ConflictException.class, () -> authService.registerNgo(ngoDTO));
 

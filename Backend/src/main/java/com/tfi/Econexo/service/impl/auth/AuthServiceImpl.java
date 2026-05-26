@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Donor registration request cannot be null");
         }
 
-        if (donorService.findByEmail(donorDTO.email()) || donorService.findByTaxId(donorDTO.taxId())) {
+        if (userService.findByEmail(donorDTO.email()).isPresent() || donorService.findByTaxId(donorDTO.taxId())) {
             throw new ConflictException("Donor already exists");
         }
 
@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Ngo registration request cannot be null");
         }
 
-        if(ngoService.existsEmail(ngoDTO.email()) ||
+        if(userService.findByEmail(ngoDTO.email()).isPresent()||
                 ngoService.findByTaxId(ngoDTO.taxId()).isPresent() ||
                 ngoService.findByLegalPersonalityNumber(ngoDTO.legalPersonalityNumber()).isPresent()){
             throw new ConflictException("Ngo already exists.");
