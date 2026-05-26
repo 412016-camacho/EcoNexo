@@ -1,4 +1,4 @@
-package com.tfi.Econexo.model.donation;
+package com.tfi.Econexo.model.ngo;
 
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.base.BaseEntity;
@@ -15,25 +15,25 @@ import org.locationtech.jts.geom.Point;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "donors")
-public class Donor extends BaseEntity {
+@Table(name = "organizations")
+public class Ngo extends BaseEntity {
 
-    @Column(name = "trade_name", nullable = false)
-    private String tradeName;
+    @Column(nullable = false)
+    private String ngoName;
 
-    @Column(name = "legal_name", nullable = false)
-    private String legalName;
-
-    @Column(name = "tax_id", unique = true, nullable = false, length = 11)
+    @Column(nullable = false, unique = true, length = 11)
     private String taxId;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    @Column(nullable = false, unique = true)
+    private String legalPersonalityNumber;
+
+    @Column(nullable = false)
+    private String responsibleName;
 
     @Column(nullable = false)
     private String street;
 
-    @Column(name = "street_number", nullable = false)
+    @Column(nullable = false)
     private String streetNumber;
 
     @Column(nullable = true)
@@ -42,20 +42,20 @@ public class Donor extends BaseEntity {
     @Column(nullable = true)
     private String apartment;
 
-    @ManyToOne(fetch =  FetchType.LAZY)
+    @Column(nullable = false)
+    private String phoneNumber;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "neighborhood_id", nullable = false)
     private Neighborhood neighborhood;
 
-    // --- POSTGIS ---
-    // SRID 4326 usa el estándar GPS mundial (Latitud/Longitud)
     @Column(columnDefinition = "geometry(Point, 4326)")
     private Point location;
 
-    @OneToOne(fetch =  FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserSec user;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "donor_type")
-    private DonorType donorType;
+    private NgoType ngoType;
 }

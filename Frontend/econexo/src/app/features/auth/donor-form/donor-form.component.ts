@@ -56,7 +56,7 @@ export class DonorFormComponent extends BaseFormComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8)]],
       tradeName: ['', [Validators.required]],
       legalName: ['', [Validators.required]],
-      taxId: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      taxId: ['', [Validators.required, Validators.pattern('^[0-9]+$'), Validators.minLength(11), Validators.maxLength(11) ]],
       phoneNumber: ['', [Validators.required]],
       donorType: ['', [Validators.required]],
       street: ['', [Validators.required]],

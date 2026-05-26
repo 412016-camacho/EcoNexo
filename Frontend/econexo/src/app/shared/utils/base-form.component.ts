@@ -14,7 +14,8 @@ export abstract class BaseFormComponent {
     if (control && control.errors && (control.dirty || control.touched)) {
       if (control.errors['required']) return 'Este campo es obligatorio.';
       if (control.errors['email']) return 'El formato del email no es válido.';
-      if(control.errors['minlength']) return `Mínimo ${control.errors['minlength'].requiredLength} caracteres`;
+      if (control.errors['minlength']) return `Mínimo ${control.errors['minlength'].requiredLength} caracteres`;
+      if (control.errors['maxlength']) return `Máximo ${control.errors['maxlength'].requiredLength} caracteres`;
       if(control.errors['pattern']) return 'Formato inválido (ingrese sólo números sin guiones ni espacio)';
     }
     return ''
