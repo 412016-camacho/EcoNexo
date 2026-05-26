@@ -1,13 +1,11 @@
 package com.tfi.Econexo.controller.auth;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tfi.Econexo.config.AuditorAwareImpl;
-import com.tfi.Econexo.dto.AuthLoginRequestDTO;
-import com.tfi.Econexo.dto.AuthResponseDTO;
-import com.tfi.Econexo.dto.DonorRegistrationDTO;
-import com.tfi.Econexo.dto.DonorResponseDTO;
-import com.tfi.Econexo.mappers.DonorMapper;
+import com.tfi.Econexo.dto.auth.AuthLoginRequestDTO;
+import com.tfi.Econexo.dto.auth.AuthResponseDTO;
+import com.tfi.Econexo.dto.auth.DonorRegistrationDTO;
+import com.tfi.Econexo.dto.auth.DonorResponseDTO;
 import com.tfi.Econexo.service.auth.AuthService;
 import com.tfi.Econexo.service.auth.PermissionService;
 import com.tfi.Econexo.service.auth.RoleService;

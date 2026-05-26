@@ -1,4 +1,4 @@
-package com.tfi.Econexo.dto;
+package com.tfi.Econexo.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

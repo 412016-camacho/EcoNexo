@@ -1,7 +1,7 @@
 package com.tfi.Econexo.service.impl.auth;
 
-import com.tfi.Econexo.dto.DonorRegistrationDTO;
-import com.tfi.Econexo.dto.DonorResponseDTO;
+import com.tfi.Econexo.dto.auth.DonorRegistrationDTO;
+import com.tfi.Econexo.dto.auth.DonorResponseDTO;
 import com.tfi.Econexo.mappers.DonorMapper;
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.donation.Donor;

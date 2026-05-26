@@ -1,9 +1,9 @@
 package com.tfi.Econexo.service.impl.auth;
 
-import com.tfi.Econexo.dto.DonorRegistrationDTO;
-import com.tfi.Econexo.dto.DonorResponseDTO;
-import com.tfi.Econexo.dto.NgoRegistrationDTO;
-import com.tfi.Econexo.dto.NgoResponseDTO;
+import com.tfi.Econexo.dto.auth.DonorRegistrationDTO;
+import com.tfi.Econexo.dto.auth.DonorResponseDTO;
+import com.tfi.Econexo.dto.auth.NgoRegistrationDTO;
+import com.tfi.Econexo.dto.auth.NgoResponseDTO;
 import com.tfi.Econexo.exception.ConflictException;
 import com.tfi.Econexo.mappers.DonorMapper;
 import com.tfi.Econexo.mappers.NgoMapper;
@@ -13,7 +13,6 @@ import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.Donor;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.model.ngo.Ngo;
-import com.tfi.Econexo.repository.location.NeighborhoodRepository;
 import com.tfi.Econexo.service.DonorService;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
@@ -24,8 +23,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +56,7 @@ public class AuthServiceImpl implements AuthService {
         String password = userService.encryptPassword(donorDTO.password());
 
         UserSec user = userMapper.toEntity(donorDTO.email(), password, role);
+        user = userService.save(user);
 
         Neighborhood neighborhood = neighborhoodService.findById(donorDTO.neighborhoodId())
                 .orElseThrow(() -> new EntityNotFoundException("Neighborhood not found"));
@@ -92,6 +90,7 @@ public class AuthServiceImpl implements AuthService {
         String password = userService.encryptPassword(ngoDTO.password());
 
         UserSec user = userMapper.toEntity(ngoDTO.email(), password, role);
+        user = userService.save(user);
 
         Ngo ngo = ngoMapper.toEntity(ngoDTO, user, neighborhood);
 

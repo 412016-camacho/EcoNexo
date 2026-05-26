@@ -1,9 +1,6 @@
 package com.tfi.Econexo.controller.auth;
 
-import com.tfi.Econexo.dto.AuthLoginRequestDTO;
-import com.tfi.Econexo.dto.AuthResponseDTO;
-import com.tfi.Econexo.dto.DonorRegistrationDTO;
-import com.tfi.Econexo.dto.DonorResponseDTO;
+import com.tfi.Econexo.dto.auth.*;
 import com.tfi.Econexo.service.auth.AuthService;
 import com.tfi.Econexo.service.impl.auth.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,13 +61,32 @@ public class AuthenticationController {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = DonorResponseDTO.class)) }
             ),
             @ApiResponse(
-                    responseCode = "400",
+                    responseCode = "409",
                     description = "Invalid credentials. Or email/taxId already exists. Returns an error message.",
                     content = @Content
             )
     })
     public ResponseEntity<DonorResponseDTO> registerDonor(@RequestBody @Valid DonorRegistrationDTO donorDTO) {
         return new ResponseEntity<>(this.authService.registerDonor(donorDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register/ngo")
+    @Operation(summary = "Register a new ngo",
+            description = "Post a new ngo in the platform. Create its access credentials with NGO rol and link its ngo profile with geolocalization data.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Ngo successfully created",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NgoResponseDTO.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Invalid credentials. Or email/taxId already exists. Returns an error message.",
+                    content = @Content
+            )
+    })
+    public ResponseEntity<NgoResponseDTO> registerNgo(@RequestBody @Valid NgoRegistrationDTO ngoDTO) {
+        return new ResponseEntity<>(this.authService.registerNgo(ngoDTO), HttpStatus.CREATED);
     }
 
 }

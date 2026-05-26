@@ -1,6 +1,7 @@
 package com.tfi.Econexo.service.impl;
 
 import com.tfi.Econexo.model.ngo.Ngo;
+import com.tfi.Econexo.repository.ngo.NgoRepository;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
 import com.tfi.Econexo.service.auth.UserService;
@@ -13,20 +14,20 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class NgoServiceImpl implements NgoService {
 
-    private final NgoService ngoService;
+    private final NgoRepository ngoRepository;
 
     @Override
     public Optional<Ngo> findByTaxId(String taxId) {
-        return ngoService.findByTaxId(taxId);
+        return ngoRepository.findByTaxId(taxId);
     }
 
     @Override
     public Optional<Ngo> findByLegalPersonalityNumber(String legalPersonalityNumber) {
-        return ngoService.findByLegalPersonalityNumber(legalPersonalityNumber);
+        return ngoRepository.findByLegalPersonalityNumber(legalPersonalityNumber);
     }
 
     @Override
     public Ngo save(Ngo ngo) {
-        return ngoService.save(ngo);
+        return ngoRepository.save(ngo);
     }
 }
