@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Ngo registration request cannot be null");
         }
 
-        if(userService.findByEmail(ngoDTO.email()).isPresent() ||
+        if(ngoService.existsEmail(ngoDTO.email()) ||
                 ngoService.findByTaxId(ngoDTO.taxId()).isPresent() ||
                 ngoService.findByLegalPersonalityNumber(ngoDTO.legalPersonalityNumber()).isPresent()){
             throw new ConflictException("Ngo already exists.");

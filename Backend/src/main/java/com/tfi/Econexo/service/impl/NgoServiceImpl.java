@@ -2,9 +2,7 @@ package com.tfi.Econexo.service.impl;
 
 import com.tfi.Econexo.model.ngo.Ngo;
 import com.tfi.Econexo.repository.ngo.NgoRepository;
-import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
-import com.tfi.Econexo.service.auth.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +27,10 @@ public class NgoServiceImpl implements NgoService {
     @Override
     public Ngo save(Ngo ngo) {
         return ngoRepository.save(ngo);
+    }
+
+    @Override
+    public boolean existsEmail(String email) {
+        return ngoRepository.existsByUser_Email(email);
     }
 }

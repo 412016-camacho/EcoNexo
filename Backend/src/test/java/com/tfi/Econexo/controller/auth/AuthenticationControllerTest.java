@@ -1,11 +1,12 @@
 package com.tfi.Econexo.controller.auth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tfi.Econexo.config.AuditorAwareImpl;
-import com.tfi.Econexo.dto.auth.AuthLoginRequestDTO;
-import com.tfi.Econexo.dto.auth.AuthResponseDTO;
-import com.tfi.Econexo.dto.auth.DonorRegistrationDTO;
-import com.tfi.Econexo.dto.auth.DonorResponseDTO;
+import com.tfi.Econexo.dto.auth.*;
+import com.tfi.Econexo.exception.ConflictException;
+import com.tfi.Econexo.service.NeighborhoodService;
+import com.tfi.Econexo.service.NgoService;
 import com.tfi.Econexo.service.auth.AuthService;
 import com.tfi.Econexo.service.auth.PermissionService;
 import com.tfi.Econexo.service.auth.RoleService;
@@ -39,6 +40,12 @@ class AuthenticationControllerTest {
 
     @MockitoBean
     private UserDetailsServiceImpl userDetailsService;
+
+    @MockitoBean
+    private NeighborhoodService neighborhoodService;
+
+    @MockitoBean
+    private NgoService ngoService;
 
     @MockitoBean
     private PermissionService permissionService;
@@ -144,5 +151,57 @@ class AuthenticationControllerTest {
                         .content(json)
         )
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void registerNgo_ReturnCreated_WhenPayloadIsValid() throws Exception {
+        String json = objectMapper.writeValueAsString(new NgoRegistrationDTO("Comedor Caritas Felices",
+                "22589875879", "87889987","María Gómez",  "Bv. San Juan", "111",
+                "1", "A", "3542343455",  1L, 40.444, 23.000,
+                "test@mail.com", "12345678", "SHELTER"));
+
+        when(authService.registerNgo(any(NgoRegistrationDTO.class))).thenReturn(
+                new NgoResponseDTO(1L, "test@email.com", "Comedor Caritas Felices",
+                        "87889987", "22589875879", "María Gómez",
+                        "3542343455", "Bv. San Juan", "111", "1", "A", 1L
+                )
+        );
+
+        mockMvc.perform(
+                post("/api/v1/auth/register/ngo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        )
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.tax_id").value("22589875879"))
+                .andExpect(jsonPath("$.legal_personality_number").value("87889987"));
+    }
+
+    @Test
+    void registerNgo_ReturnConflict_WhenNgoAlreadyExists() throws Exception {
+        String json = objectMapper.writeValueAsString(new NgoRegistrationDTO("Comedor Caritas Felices",
+                "22589875879", "87889987","María Gómez",  "Bv. San Juan", "111",
+                "1", "A", "3542343455",  1L, 40.444, 23.000,
+                "test@mail.com", "12345678", "SHELTER"));
+
+        when(authService.registerNgo(any(NgoRegistrationDTO.class)))
+                .thenReturn(new NgoResponseDTO(1L, "test@email.com", "Comedor Caritas Felices",
+                        "87889987", "22589875879", "María Gómez",
+                        "3542343455", "Bv. San Juan", "111", "1", "A", 1L))
+                .thenThrow(new ConflictException("Ngo already exists"));
+
+        mockMvc.perform(
+                post("/api/v1/auth/register/ngo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        )
+                .andExpect(status().isCreated());
+        mockMvc.perform(
+                post("/api/v1/auth/register/ngo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        )
+                .andExpect(status().isConflict());
     }
 }
