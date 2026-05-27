@@ -9,6 +9,7 @@ import {
 } from '../../shared/models/donor.model';
 import {Observable} from 'rxjs';
 import {AuthLoginRequest, AuthResponse} from '../../shared/models/login.model';
+import {NgoRegistrationDTO, NgoResponseDTO} from '../../shared/models/ngo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,5 +54,14 @@ export class AuthService {
    */
   login(credentials: AuthLoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials);
+  }
+
+  /**
+   * Register a new NGO
+   * @param ngoData - The NGO data to register
+   * @returns An Observable of the registered NGO
+   */
+  registerNgo(ngoData:NgoRegistrationDTO): Observable<NgoResponseDTO>{
+    return this.http.post<NgoResponseDTO>(`${this.apiUrl}/register/ngo`, ngoData);
   }
 }
