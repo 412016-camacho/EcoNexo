@@ -9,6 +9,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Router, RouterLink} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {BaseFormComponent} from "../../../shared/utils/base-form.component";
+import {LocationService} from "../../../core/services/location.service";
 
 @Component({
   selector: 'app-donor-form',
@@ -25,6 +26,7 @@ export class DonorFormComponent extends BaseFormComponent implements OnInit {
 
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly locationService = inject(LocationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastr = inject(ToastrService);
   private readonly router = inject(Router);
@@ -91,24 +93,8 @@ export class DonorFormComponent extends BaseFormComponent implements OnInit {
         this.donorTypes = types;
         this.neighborhoods = neighborhoods;
       },
-      error: (error) => console.error("Error loading donor types", error)
+      error: (error) => console.error("Error loading initial data", error)
     })
-  }
-
-  /**
-   * Method that call Google Geocoding API
-   * takes street, streetNumber and city from form and returns latitude and longitude, updating form
-   */
-  async geocodeAddress(): Promise<void> {
-    const street = this.donorForm.get('street')?.value;
-    const number = this.donorForm.get('streetNumber')?.value;
-
-    if(!street || !number) return;
-
-    //todo implementar llamada Google Geocoding API
-    //ej
-    //const coords = await this.googleService.getCoordinates(`${street} ${number}, Córdoba, Argentina`);
-    //this.donorForm.patchValue({ latitude: coords.lat, longitude: coords.lng });
   }
 
   /**
@@ -152,28 +138,25 @@ export class DonorFormComponent extends BaseFormComponent implements OnInit {
   //Todo reemplazar en el sprint 3 con conexión real a Google API
   onNeighborhoodChange(): void {
     const neighborhoodId = Number(this.donorForm.get('neighborhoodId')?.value);
+    const coords = this.locationService.getMockCoordinates(neighborhoodId);
 
-    // Inyección automática para simular la localización y pasar el Validator.required
-    if (neighborhoodId === 1) {
-      this.donorForm.patchValue({ latitude: -31.4233, longitude: -64.1865 });
-    } else if (neighborhoodId === 2) {
-      this.donorForm.patchValue({ latitude: -31.4125, longitude: -64.1678 });
+    if(coords){
+      this.form.patchValue(coords);
+      console.log('Coords assigned provisionally:', coords);
     }
-
-    console.log('Coordenadas asignadas provisionalmente:', this.donorForm.value.latitude, this.donorForm.value.longitude);
   }
 
   /**
    * Handle address blur temporary until Google Geocoding API is implemented
    */
   //Todo reemplazar en el sprint 3 con conexión real a Google API
-  onAddressBlur(): void {
+  async onAddressBlur(): Promise<void> {
     const street = this.donorForm.get('street')?.value;
     const number = this.donorForm.get('streetNumber')?.value;
 
-    if (street && number) {
-      // Acá se va a disparar la llamada real a: google.maps.Geocoder
-      console.log(`Listo para geocodificar dirección: ${street} ${number}, Córdoba, Argentina`);
+    const coords = await this.locationService.geocodeAddress(street, number);
+    if (coords) {
+      this.form.patchValue(coords);
     }
   }
 

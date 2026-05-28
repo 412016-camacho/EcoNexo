@@ -9,7 +9,7 @@ import {
 } from '../../shared/models/donor.model';
 import {Observable} from 'rxjs';
 import {AuthLoginRequest, AuthResponse} from '../../shared/models/login.model';
-import {NgoRegistrationDTO, NgoResponseDTO} from '../../shared/models/ngo.model';
+import {NgoRegistrationDTO, NgoResponseDTO, NgoTypeLookup} from '../../shared/models/ngo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +21,7 @@ export class AuthService {
   private readonly apiUrl =`${environment.apiUrl}/v1/auth`;
   private readonly neighborhoodsUrl =`${environment.apiUrl}/v1/neighborhoods/public`;
   private readonly donorsUrl =`${environment.apiUrl}/v1/donors/public/donor-types`;
+  private readonly ngosUrl = `${environment.apiUrl}/v1/organizations/public/ngo-types`;
 
   /**
    * Register a new donor
@@ -45,6 +46,14 @@ export class AuthService {
    */
   getDonorTypes(): Observable<DonorTypeLookup[]> {
     return this.http.get<DonorTypeLookup[]>(this.donorsUrl);
+  }
+
+  /**
+   * Get all NGO types
+   * @returns An Observable of NGO types
+   */
+  getNgoTypes(): Observable<NgoTypeLookup[]> {
+    return this.http.get<NgoTypeLookup[]>(this.ngosUrl);
   }
 
   /**
