@@ -4,7 +4,7 @@ import {RoleSelectionComponent} from '../features/auth/role-selection/role-selec
 import {DonorFormComponent} from '../features/auth/donor-form/donor-form.component';
 import {DashboardDonorComponent} from '../features/dashboard/dashboard-donor/dashboard-donor.component';
 import {NgoFormComponent} from '../features/auth/ngo-form/ngo-form.component';
-import {DahsboardNgoComponent} from '../features/dashboard/dahsboard-ngo/dahsboard-ngo.component';
+import {DashboardNgoComponent} from '../features/dashboard/dashboard-ngo/dashboard-ngo.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -13,7 +13,7 @@ export const routes: Routes = [
   //{ path: 'register/driver', component: DriverFormComponent },
   { path: 'register/ngo', component: NgoFormComponent },
   { path: 'dashboard/donor', component: DashboardDonorComponent },
-  { path: 'dashboard/ngo', component: DahsboardNgoComponent },
+  { path: 'dashboard/ngo', component: DashboardNgoComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
 ];

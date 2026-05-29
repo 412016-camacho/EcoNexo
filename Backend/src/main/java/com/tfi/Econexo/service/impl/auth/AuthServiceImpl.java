@@ -8,6 +8,7 @@ import com.tfi.Econexo.exception.ConflictException;
 import com.tfi.Econexo.mappers.DonorMapper;
 import com.tfi.Econexo.mappers.NgoMapper;
 import com.tfi.Econexo.mappers.UserMapper;
+import com.tfi.Econexo.model.RegistrationStatus;
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.Donor;
@@ -62,6 +63,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new EntityNotFoundException("Neighborhood not found"));
 
         Donor donor = donorMapper.toEntity(donorDTO, user, neighborhood);
+        donor.setStatus(RegistrationStatus.APPROVED);
 
         donorService.save(donor);
 
@@ -93,6 +95,7 @@ public class AuthServiceImpl implements AuthService {
         user = userService.save(user);
 
         Ngo ngo = ngoMapper.toEntity(ngoDTO, user, neighborhood);
+        ngo.setStatus(RegistrationStatus.PENDING);
 
         ngoService.save(ngo);
 

@@ -53,5 +53,6 @@ public record NgoRegistrationDTO(
 
         @Schema(description = "Organization type", example = "NGO")
         @NotBlank String ngoType
+
 ) {
 }

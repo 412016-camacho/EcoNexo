@@ -1,5 +1,6 @@
 package com.tfi.Econexo.model.donation;
 
+import com.tfi.Econexo.model.RegistrationStatus;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.base.BaseEntity;
 import com.tfi.Econexo.model.location.Neighborhood;
@@ -58,4 +59,8 @@ public class Donor extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "donor_type")
     private DonorType donorType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private RegistrationStatus status = RegistrationStatus.APPROVED;
 }
