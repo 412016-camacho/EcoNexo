@@ -1,23 +1,26 @@
-package com.tfi.Econexo.dto.auth;
+package com.tfi.Econexo.dto.auth.ngo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "Data transfer object representing the profile response returned after a successful donor registration")
-public record DonorResponseDTO(
-        @Schema(description = "Unique auto-generated database identifier for the specific donor profile", example = "1")
+@Schema(description = "Data transfer object representing the profile response returned after a successful ngo registration")
+public record NgoResponseDTO(
+        @Schema(description = "Unique identifier of the organization", example = "1")
         Long id,
 
-        @Schema(description = "Registered authentication login email associated with the profile", example = "contacto@elhornito.com")
+        @Schema(description = "User email", example = "user@example.com")
         String email,
 
-        @Schema(description = "Registered commercial brand name", example = "El Hornito Santiagueño")
-        String tradeName,
+        @Schema(description = "Organization name", example = "Fundación EcoNexo")
+        String ngoName,
 
-        @Schema(description = "Registered corporate legal company name", example = "Hornito Alimentos SRL")
-        String legalName,
+        @Schema(description = "Legal personality number", example = "123456789")
+        String legalPersonalityNumber,
 
-        @Schema(description = "Registered unique national tax identification number (CUIT)", example = "30712345678")
+        @Schema(description = "Tax ID number", example = "123456789")
         String taxId,
+
+        @Schema(description = "Legal representative name", example = "Juan Perez")
+        String responsibleName,
 
         @Schema(description = "Registered contact telephone line", example = "351155123456")
         String phoneNumber,

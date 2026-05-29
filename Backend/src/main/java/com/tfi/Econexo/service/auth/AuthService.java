@@ -1,9 +1,9 @@
 package com.tfi.Econexo.service.auth;
 
-import com.tfi.Econexo.dto.auth.DonorRegistrationDTO;
-import com.tfi.Econexo.dto.auth.DonorResponseDTO;
-import com.tfi.Econexo.dto.auth.NgoRegistrationDTO;
-import com.tfi.Econexo.dto.auth.NgoResponseDTO;
+import com.tfi.Econexo.dto.auth.donor.DonorRegistrationDTO;
+import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoRegistrationDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoResponseDTO;
 
 public interface AuthService {
 

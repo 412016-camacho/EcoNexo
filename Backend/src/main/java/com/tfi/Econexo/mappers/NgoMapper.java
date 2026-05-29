@@ -1,7 +1,7 @@
 package com.tfi.Econexo.mappers;
 
-import com.tfi.Econexo.dto.auth.NgoRegistrationDTO;
-import com.tfi.Econexo.dto.auth.NgoResponseDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoRegistrationDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoResponseDTO;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.model.ngo.Ngo;

@@ -1,4 +1,4 @@
-package com.tfi.Econexo.dto.auth;
+package com.tfi.Econexo.dto.auth.login;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;

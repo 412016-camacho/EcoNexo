@@ -1,4 +1,4 @@
-package com.tfi.Econexo.dto.auth;
+package com.tfi.Econexo.dto.auth.donor;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

@@ -1,9 +1,9 @@
 package com.tfi.Econexo.service.impl.auth;
 
-import com.tfi.Econexo.dto.auth.DonorRegistrationDTO;
-import com.tfi.Econexo.dto.auth.DonorResponseDTO;
-import com.tfi.Econexo.dto.auth.NgoRegistrationDTO;
-import com.tfi.Econexo.dto.auth.NgoResponseDTO;
+import com.tfi.Econexo.dto.auth.donor.DonorRegistrationDTO;
+import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoRegistrationDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoResponseDTO;
 import com.tfi.Econexo.exception.ConflictException;
 import com.tfi.Econexo.mappers.DonorMapper;
 import com.tfi.Econexo.mappers.NgoMapper;
@@ -13,7 +13,6 @@ import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.Donor;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.model.ngo.Ngo;
-import com.tfi.Econexo.repository.location.NeighborhoodRepository;
 import com.tfi.Econexo.service.DonorService;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;

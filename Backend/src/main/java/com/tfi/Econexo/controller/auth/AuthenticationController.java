@@ -1,6 +1,11 @@
 package com.tfi.Econexo.controller.auth;
 
-import com.tfi.Econexo.dto.auth.*;
+import com.tfi.Econexo.dto.auth.donor.DonorRegistrationDTO;
+import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
+import com.tfi.Econexo.dto.auth.login.AuthLoginRequestDTO;
+import com.tfi.Econexo.dto.auth.login.AuthResponseDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoRegistrationDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoResponseDTO;
 import com.tfi.Econexo.service.auth.AuthService;
 import com.tfi.Econexo.service.impl.auth.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;

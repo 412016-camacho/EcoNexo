@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -31,4 +34,14 @@ public class Vehicle extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
+
+    @Column(name = "drivers_license_front_url")
+    private String driversLicenseFrontUrl;
+
+    @Column(name = "drivers_license_back_url")
+    private String driversLicenseBackUrl;
+
+    @Column(name = "drivers_license_expiration")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate driversLicenseExpiration;
 }

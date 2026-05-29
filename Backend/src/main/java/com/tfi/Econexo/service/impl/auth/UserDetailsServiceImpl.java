@@ -1,7 +1,7 @@
 package com.tfi.Econexo.service.impl.auth;
 
-import com.tfi.Econexo.dto.auth.AuthLoginRequestDTO;
-import com.tfi.Econexo.dto.auth.AuthResponseDTO;
+import com.tfi.Econexo.dto.auth.login.AuthLoginRequestDTO;
+import com.tfi.Econexo.dto.auth.login.AuthResponseDTO;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.repository.auth.UserRepository;
 import com.tfi.Econexo.utils.JwtUtils;

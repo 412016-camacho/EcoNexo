@@ -1,0 +1,28 @@
+package com.tfi.Econexo.utils.validation;
+
+import com.tfi.Econexo.dto.auth.logistics.DriverRegistrationDTO;
+import com.tfi.Econexo.dto.auth.logistics.VehicleRegistrationDTO;
+import com.tfi.Econexo.model.logistics.VehicleType;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
+public class VehicleRequirementsValidator implements ConstraintValidator<ValidVehicleRequirements, DriverRegistrationDTO> {
+
+    @Override
+    public boolean isValid(DriverRegistrationDTO dto, ConstraintValidatorContext context) {
+
+        if(dto.vehicle() == null || dto.vehicle().vehicleType() == null) return true;
+
+        VehicleType type = dto.vehicle().vehicleType();
+
+        if(type == VehicleType.BICYCLE || type == VehicleType.KICK_SCOOTER) return true;
+
+        VehicleRegistrationDTO vehicle = dto.vehicle();
+        boolean isValid = true;
+
+        if(vehicle.numberPlate() == null || vehicle.numberPlate().isEmpty()) return !isValid;
+        if(vehicle.driverLicenseFrontUrl() == null || vehicle.driverLicenseBackUrl() == null || vehicle.driverLicenseExpiration() == null) return !isValid;
+
+        return isValid;
+    }
+}
