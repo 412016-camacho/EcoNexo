@@ -1,8 +1,8 @@
-package com.tfi.Econexo.model.donation;
+package com.tfi.Econexo.model.driver;
 
-import com.tfi.Econexo.model.enums.RegistrationStatus;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.base.BaseEntity;
+import com.tfi.Econexo.model.enums.RegistrationStatus;
 import com.tfi.Econexo.model.location.Neighborhood;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,20 +10,46 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.geom.Point;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "donors")
-public class Donor extends BaseEntity {
+@Table(name = "drivers")
+public class Driver extends BaseEntity {
 
-    @Column(name = "trade_name", nullable = false)
-    private String tradeName;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
 
-    @Column(name = "legal_name", nullable = false)
-    private String legalName;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "birth_date", nullable = false)
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate birthDate;
+
+    @Column(name = "drivers_license_front_url")
+    private String driversLicenseFrontUrl;
+
+    @Column(name = "drivers_license_back_url")
+    private String driversLicenseBackUrl;
+
+    @Column(name = "drivers_license_expiration")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate driversLicenseExpiration;
+
+    @Column(name = "health_booklet_url")
+    private String healthBookletUrl;
+
+    @Column(name = "health_booklet_expiration")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate healthBookletExpiration;
 
     @Column(name = "tax_id", unique = true, nullable = false, length = 11)
     private String taxId;
@@ -57,9 +83,8 @@ public class Donor extends BaseEntity {
     private UserSec user;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "donor_type")
-    private DonorType donorType;
-
-    @Enumerated(EnumType.STRING)
     private RegistrationStatus status = RegistrationStatus.APPROVED;
+
+    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vehicle> vehicles = new ArrayList<>();
 }

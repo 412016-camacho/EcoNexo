@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-26T16:20:09-0300",
+    date = "2026-05-29T12:11:12-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -62,6 +62,7 @@ public class DonorMapperImpl implements DonorMapper {
         String streetNumber = null;
         String floor = null;
         String apartment = null;
+        String status = null;
 
         neighborhoodId = donorNeighborhoodId( donor );
         email = donorUserEmail( donor );
@@ -74,8 +75,11 @@ public class DonorMapperImpl implements DonorMapper {
         streetNumber = donor.getStreetNumber();
         floor = donor.getFloor();
         apartment = donor.getApartment();
+        if ( donor.getStatus() != null ) {
+            status = donor.getStatus().name();
+        }
 
-        DonorResponseDTO donorResponseDTO = new DonorResponseDTO( id, email, tradeName, legalName, taxId, phoneNumber, street, streetNumber, floor, apartment, neighborhoodId );
+        DonorResponseDTO donorResponseDTO = new DonorResponseDTO( id, email, tradeName, legalName, taxId, phoneNumber, street, streetNumber, floor, apartment, neighborhoodId, status );
 
         return donorResponseDTO;
     }

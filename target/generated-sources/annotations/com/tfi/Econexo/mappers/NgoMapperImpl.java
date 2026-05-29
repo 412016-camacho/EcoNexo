@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-26T16:20:10-0300",
+    date = "2026-05-29T12:11:11-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -61,6 +61,7 @@ public class NgoMapperImpl implements NgoMapper {
         String streetNumber = null;
         String floor = null;
         String apartment = null;
+        String status = null;
 
         email = ngoUserEmail( ngo );
         neighborhoodId = ngoNeighborhoodId( ngo );
@@ -74,8 +75,11 @@ public class NgoMapperImpl implements NgoMapper {
         streetNumber = ngo.getStreetNumber();
         floor = ngo.getFloor();
         apartment = ngo.getApartment();
+        if ( ngo.getStatus() != null ) {
+            status = ngo.getStatus().name();
+        }
 
-        NgoResponseDTO ngoResponseDTO = new NgoResponseDTO( id, email, ngoName, legalPersonalityNumber, taxId, responsibleName, phoneNumber, street, streetNumber, floor, apartment, neighborhoodId );
+        NgoResponseDTO ngoResponseDTO = new NgoResponseDTO( id, email, ngoName, legalPersonalityNumber, taxId, responsibleName, phoneNumber, street, streetNumber, floor, apartment, neighborhoodId, status );
 
         return ngoResponseDTO;
     }

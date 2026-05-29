@@ -8,7 +8,7 @@ import com.tfi.Econexo.exception.ConflictException;
 import com.tfi.Econexo.mappers.DonorMapper;
 import com.tfi.Econexo.mappers.NgoMapper;
 import com.tfi.Econexo.mappers.UserMapper;
-import com.tfi.Econexo.model.RegistrationStatus;
+import com.tfi.Econexo.model.enums.RegistrationStatus;
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.Donor;
