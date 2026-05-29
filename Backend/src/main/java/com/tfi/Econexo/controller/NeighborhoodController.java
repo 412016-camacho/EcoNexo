@@ -1,4 +1,4 @@
-package com.tfi.Econexo.controller.auth;
+package com.tfi.Econexo.controller;
 
 import com.tfi.Econexo.dto.NeighborhoodLookupDTO;
 import com.tfi.Econexo.service.NeighborhoodService;

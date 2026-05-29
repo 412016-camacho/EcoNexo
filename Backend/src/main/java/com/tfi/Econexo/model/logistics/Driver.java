@@ -1,4 +1,4 @@
-package com.tfi.Econexo.model.driver;
+package com.tfi.Econexo.model.logistics;
 
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.base.BaseEntity;
