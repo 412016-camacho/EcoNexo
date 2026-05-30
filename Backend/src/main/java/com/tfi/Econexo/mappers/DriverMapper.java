@@ -1,16 +1,15 @@
 package com.tfi.Econexo.mappers;
 
-import com.tfi.Econexo.dto.auth.donor.DonorRegistrationDTO;
-import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
+import com.tfi.Econexo.dto.auth.logistics.DriverRegistrationDTO;
+import com.tfi.Econexo.dto.auth.logistics.DriverResponseDTO;
 import com.tfi.Econexo.model.auth.UserSec;
-import com.tfi.Econexo.model.donation.Donor;
 import com.tfi.Econexo.model.location.Neighborhood;
-
+import com.tfi.Econexo.model.logistics.Driver;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
-public interface DonorMapper {
+@Mapper(componentModel = "spring", uses = {VehicleMapper.class})
+public interface DriverMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "version", ignore = true)
@@ -22,12 +21,11 @@ public interface DonorMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "user", source = "user")
     @Mapping(target = "neighborhood", source = "neighborhood")
-    @Mapping(target = "donorType", source = "dto.donorType")
     @Mapping(target = "location", expression = "java(com.tfi.Econexo.utils.GeometryUtils.createPoint(dto.longitude(), dto.latitude()))")
-    Donor toEntity(DonorRegistrationDTO dto, UserSec user, Neighborhood neighborhood);
+    Driver toEntity(DriverRegistrationDTO dto, UserSec user, Neighborhood neighborhood);
 
-    @Mapping(target = "neighborhoodId", source = "donor.neighborhood.id")
-    @Mapping(target = "email", source = "donor.user.email")
+    @Mapping(target = "neighborhoodName", source = "driver.neighborhood.name")
+    @Mapping(target = "email", source = "user.email")
     @Mapping(target = "status", source = "status")
-    DonorResponseDTO toResponseDTO(Donor donor);
+    DriverResponseDTO toResponseDTO(Driver driver);
 }

@@ -23,7 +23,7 @@ public record DriverRegistrationDTO(
         @Schema(description = "Unique national tax identification number (CUIT)", example = "30712345678")
         @NotBlank String taxId,
 
-        @Schema(description = "Date of birth of the driver", example = "31-12-2025")
+        @Schema(description = "Date of birth of the driver", example = "2025-12-31")
         @NotNull LocalDate birthDate,
 
         @Schema(description = "Authentication email address, must be unique within the platform", example = "contacto@elhornito.com")
@@ -33,10 +33,10 @@ public record DriverRegistrationDTO(
         @NotBlank @Size(min = 8) String password,
 
         @Schema(description = "URL link to the driver's health booklet", example = "https://example.com/health-booklet.pdf")
-        @NotBlank String healthBookletUrl,
+        @NotBlank String foodHandlerCertificateUrl,
 
         @Schema(description = "Date of expiration of the driver's health booklet", example = "31-12-2025")
-        @NotNull LocalDate healthBookletExpiration,
+        @NotNull LocalDate foodHandlerCertificateExpiration,
 
         @Schema(description = "Vehicle registration data")
         @NotNull @Valid VehicleRegistrationDTO vehicle,

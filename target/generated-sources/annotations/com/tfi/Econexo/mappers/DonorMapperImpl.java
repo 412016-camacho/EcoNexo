@@ -1,7 +1,7 @@
 package com.tfi.Econexo.mappers;
 
-import com.tfi.Econexo.dto.auth.DonorRegistrationDTO;
-import com.tfi.Econexo.dto.auth.DonorResponseDTO;
+import com.tfi.Econexo.dto.auth.donor.DonorRegistrationDTO;
+import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.Donor;
 import com.tfi.Econexo.model.donation.DonorType;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-29T12:11:12-0300",
+    date = "2026-05-30T07:09:04-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -53,6 +53,7 @@ public class DonorMapperImpl implements DonorMapper {
 
         Long neighborhoodId = null;
         String email = null;
+        String status = null;
         Long id = null;
         String tradeName = null;
         String legalName = null;
@@ -62,10 +63,12 @@ public class DonorMapperImpl implements DonorMapper {
         String streetNumber = null;
         String floor = null;
         String apartment = null;
-        String status = null;
 
         neighborhoodId = donorNeighborhoodId( donor );
         email = donorUserEmail( donor );
+        if ( donor.getStatus() != null ) {
+            status = donor.getStatus().name();
+        }
         id = donor.getId();
         tradeName = donor.getTradeName();
         legalName = donor.getLegalName();
@@ -75,9 +78,6 @@ public class DonorMapperImpl implements DonorMapper {
         streetNumber = donor.getStreetNumber();
         floor = donor.getFloor();
         apartment = donor.getApartment();
-        if ( donor.getStatus() != null ) {
-            status = donor.getStatus().name();
-        }
 
         DonorResponseDTO donorResponseDTO = new DonorResponseDTO( id, email, tradeName, legalName, taxId, phoneNumber, street, streetNumber, floor, apartment, neighborhoodId, status );
 

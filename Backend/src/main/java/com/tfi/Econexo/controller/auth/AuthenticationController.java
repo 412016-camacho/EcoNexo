@@ -4,6 +4,8 @@ import com.tfi.Econexo.dto.auth.donor.DonorRegistrationDTO;
 import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
 import com.tfi.Econexo.dto.auth.login.AuthLoginRequestDTO;
 import com.tfi.Econexo.dto.auth.login.AuthResponseDTO;
+import com.tfi.Econexo.dto.auth.logistics.DriverRegistrationDTO;
+import com.tfi.Econexo.dto.auth.logistics.DriverResponseDTO;
 import com.tfi.Econexo.dto.auth.ngo.NgoRegistrationDTO;
 import com.tfi.Econexo.dto.auth.ngo.NgoResponseDTO;
 import com.tfi.Econexo.service.auth.AuthService;
@@ -92,6 +94,11 @@ public class AuthenticationController {
     })
     public ResponseEntity<NgoResponseDTO> registerNgo(@RequestBody @Valid NgoRegistrationDTO ngoDTO) {
         return new ResponseEntity<>(this.authService.registerNgo(ngoDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register/driver")
+    public ResponseEntity<DriverResponseDTO> registerDriver(@RequestBody @Valid DriverRegistrationDTO driverDTO) {
+        return new ResponseEntity<>(this.authService.registerDriver(driverDTO), HttpStatus.CREATED);
     }
 
 }

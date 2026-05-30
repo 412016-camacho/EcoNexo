@@ -1,7 +1,7 @@
 package com.tfi.Econexo.mappers;
 
-import com.tfi.Econexo.dto.auth.NgoRegistrationDTO;
-import com.tfi.Econexo.dto.auth.NgoResponseDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoRegistrationDTO;
+import com.tfi.Econexo.dto.auth.ngo.NgoResponseDTO;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.model.ngo.Ngo;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-29T12:11:11-0300",
+    date = "2026-05-30T07:09:05-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -51,6 +51,7 @@ public class NgoMapperImpl implements NgoMapper {
 
         String email = null;
         Long neighborhoodId = null;
+        String status = null;
         Long id = null;
         String ngoName = null;
         String legalPersonalityNumber = null;
@@ -61,10 +62,12 @@ public class NgoMapperImpl implements NgoMapper {
         String streetNumber = null;
         String floor = null;
         String apartment = null;
-        String status = null;
 
         email = ngoUserEmail( ngo );
         neighborhoodId = ngoNeighborhoodId( ngo );
+        if ( ngo.getStatus() != null ) {
+            status = ngo.getStatus().name();
+        }
         id = ngo.getId();
         ngoName = ngo.getNgoName();
         legalPersonalityNumber = ngo.getLegalPersonalityNumber();
@@ -75,9 +78,6 @@ public class NgoMapperImpl implements NgoMapper {
         streetNumber = ngo.getStreetNumber();
         floor = ngo.getFloor();
         apartment = ngo.getApartment();
-        if ( ngo.getStatus() != null ) {
-            status = ngo.getStatus().name();
-        }
 
         NgoResponseDTO ngoResponseDTO = new NgoResponseDTO( id, email, ngoName, legalPersonalityNumber, taxId, responsibleName, phoneNumber, street, streetNumber, floor, apartment, neighborhoodId, status );
 

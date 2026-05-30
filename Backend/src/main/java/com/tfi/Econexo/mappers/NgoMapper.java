@@ -18,6 +18,7 @@ public interface NgoMapper {
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "active", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "user", source = "user")
     @Mapping(target = "neighborhood", source = "neighborhood")
     @Mapping(target = "ngoName", source = "dto.ngoName")
@@ -35,6 +36,7 @@ public interface NgoMapper {
 
     @Mapping(target = "email", source = "ngo.user.email")
     @Mapping(target = "neighborhoodId", source = "ngo.neighborhood.id")
+    @Mapping(target = "status", source = "status")
     NgoResponseDTO toResponseDTO(Ngo ngo);
 
 }
