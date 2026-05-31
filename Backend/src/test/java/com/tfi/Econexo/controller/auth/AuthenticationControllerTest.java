@@ -6,9 +6,16 @@ import com.tfi.Econexo.dto.auth.donor.DonorRegistrationDTO;
 import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
 import com.tfi.Econexo.dto.auth.login.AuthLoginRequestDTO;
 import com.tfi.Econexo.dto.auth.login.AuthResponseDTO;
+import com.tfi.Econexo.dto.auth.logistics.DriverRegistrationDTO;
+import com.tfi.Econexo.dto.auth.logistics.DriverResponseDTO;
+import com.tfi.Econexo.dto.auth.logistics.VehicleRegistrationDTO;
+import com.tfi.Econexo.dto.auth.logistics.VehicleResponseDTO;
 import com.tfi.Econexo.dto.auth.ngo.NgoRegistrationDTO;
 import com.tfi.Econexo.dto.auth.ngo.NgoResponseDTO;
 import com.tfi.Econexo.exception.ConflictException;
+import com.tfi.Econexo.model.enums.RegistrationStatus;
+import com.tfi.Econexo.model.logistics.VehicleType;
+import com.tfi.Econexo.service.DriverService;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
 import com.tfi.Econexo.service.auth.AuthService;
@@ -27,6 +34,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -62,6 +72,9 @@ class AuthenticationControllerTest {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private DriverService driverService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -126,7 +139,7 @@ class AuthenticationControllerTest {
                 .thenReturn(new DonorResponseDTO(1L, "test@mail.com",
                         "Hornito Santiagueño", "Hornito Alimentos SRL",
                         "30712345678", "351155123456", "Av. Hipólito Yrigoyen",
-                        "450", "PB", "A", 1L));
+                        "450", "PB", "A", 1L, "PENDING"));
 
         mockMvc.perform(
                 post("/api/v1/auth/register/donor")
@@ -167,7 +180,7 @@ class AuthenticationControllerTest {
         when(authService.registerNgo(any(NgoRegistrationDTO.class))).thenReturn(
                 new NgoResponseDTO(1L, "test@email.com", "Comedor Caritas Felices",
                         "87889987", "22589875879", "María Gómez",
-                        "3542343455", "Bv. San Juan", "111", "1", "A", 1L
+                        "3542343455", "Bv. San Juan", "111", "1", "A", 1L, "PENDING"
                 )
         );
 
@@ -190,9 +203,6 @@ class AuthenticationControllerTest {
                 "test@mail.com", "12345678", "SHELTER"));
 
         when(authService.registerNgo(any(NgoRegistrationDTO.class)))
-                .thenReturn(new NgoResponseDTO(1L, "test@email.com", "Comedor Caritas Felices",
-                        "87889987", "22589875879", "María Gómez",
-                        "3542343455", "Bv. San Juan", "111", "1", "A", 1L))
                 .thenThrow(new ConflictException("Ngo already exists"));
 
         mockMvc.perform(
@@ -200,12 +210,116 @@ class AuthenticationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
         )
-                .andExpect(status().isCreated());
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void registerDriver_ReturnCreated_WhenPayloadIsValid() throws Exception {
+        String json = objectMapper.writeValueAsString(new DriverRegistrationDTO("Ana",
+                "Perez","235039876522", LocalDate.now().minusYears(17),
+                "ana@mail.com", "Pass1234", "www.url.com", LocalDate.of(1990, 4, 12),
+                new VehicleRegistrationDTO(
+                        VehicleType.CAR, true, 1000, "AA123CC",
+                        "www.url.com", "www.url1.com", LocalDate.of(2029, 4,12)
+                ),
+                "354325543223", "Obispo Trejo", "440", "PB",
+                "A", -32.00393, -64.999332, 1L));
+
+        when(authService.registerDriver(any(DriverRegistrationDTO.class))).thenReturn(
+                new DriverResponseDTO(
+                        1L, "Ana", "Perez", "ana@mail.com", "235039876522",
+                        "344215534343", LocalDate.of(1990,5,30),
+                        String.valueOf(RegistrationStatus.PENDING), LocalDate.of(2027,5,30),
+                        "Obispo Trejo", "440", "PB", "A", "Nueva Córdoba",
+                        List.of(new VehicleResponseDTO(1L, VehicleType.CAR, true,
+                                1000, "AA123CC", LocalDate.of(2029, 4,12)))));
+
         mockMvc.perform(
-                post("/api/v1/auth/register/ngo")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json)
-        )
+                        post("/api/v1/auth/register/driver")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.tax_id").value("235039876522"));
+    }
+
+    @Test
+    void registerDriver_ReturnBadRequest_WhenPayloadIsInValid() throws Exception {
+        String json = """
+                {
+                 "email": "test@mail.com",
+                 "password": "123456",
+                 "first_name": "Hernán"
+                }
+                """;
+
+        mockMvc.perform(
+                        post("/api/v1/auth/register/driver")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void registerDriver_ReturnBadRequest_WhenCarHasNotNumberPlate() throws Exception {
+        String json = """
+                {
+                 "first_name": "Ana",
+                 "last_name": "Pérez",
+                 "tax_id": "21351456855",
+                 "email": "ana.driver@example.com",
+                 "password": "Password123!",
+                 "birth_date": "1990-05-15",
+                 "phone_number": "351155123456",
+                 "food_handler_certificate_url": "https://res.cloudinary.com/demo/image/upload/libreta_sanitaria.jpg",
+                 "food_handler_certificate_expiration": "2027-12-31",
+                 "street": "Av. Colón",
+                 "street_number": "1500",
+                 "floor": "2",
+                 "apartment": "B",
+                 "latitude": -31.4035,
+                 "longitude": -64.1950,
+                 "neighborhood_id": 1,
+                 "vehicle": {
+                     "vehicle_type": "CAR",
+                     "has_refrigeration": true,
+                     "capacity_kg": 150,
+                     "number_plate": null,
+                     "driver_license_front_url": "www.front.com",
+                     "driver_license_back_url": "www.back.com",
+                     "driver_license_expiration": "2029-02-20"
+                     }
+                }
+                """;
+
+        mockMvc.perform(
+                        post("/api/v1/auth/register/driver")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void registerDriver_ReturnConflictException_WhenEmailAlreadyExists() throws Exception {
+        String json = objectMapper.writeValueAsString(new DriverRegistrationDTO("Ana",
+                "Perez","235039876522", LocalDate.now().minusYears(17),
+                "ana@mail.com", "Pass1234", "www.url.com", LocalDate.of(1990, 4, 12),
+                new VehicleRegistrationDTO(
+                        VehicleType.CAR, true, 1000, "AA123CC",
+                        "www.url.com", "www.url1.com", LocalDate.of(2029, 4,12)
+                ),
+                "354325543223", "Obispo Trejo", "440", "PB",
+                "A", -32.00393, -64.999332, 1L));
+
+        when(authService.registerDriver(any(DriverRegistrationDTO.class))).thenThrow(new ConflictException("Driver already exists"));
+
+        mockMvc.perform(
+                        post("/api/v1/auth/register/driver")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
                 .andExpect(status().isConflict());
     }
 }

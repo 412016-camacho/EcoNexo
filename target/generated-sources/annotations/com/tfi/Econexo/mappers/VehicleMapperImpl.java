@@ -1,4 +1,4 @@
-package com.tfi.Econexo.service.auth;
+package com.tfi.Econexo.mappers;
 
 import com.tfi.Econexo.dto.auth.logistics.VehicleRegistrationDTO;
 import com.tfi.Econexo.dto.auth.logistics.VehicleResponseDTO;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-30T07:09:05-0300",
+    date = "2026-05-30T10:39:30-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component

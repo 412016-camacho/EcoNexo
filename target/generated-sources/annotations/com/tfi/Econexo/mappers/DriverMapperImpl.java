@@ -7,7 +7,6 @@ import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.model.logistics.Vehicle;
-import com.tfi.Econexo.service.auth.VehicleMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-30T07:09:05-0300",
+    date = "2026-05-30T10:39:30-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
