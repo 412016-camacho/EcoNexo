@@ -34,11 +34,11 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
         String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(jwtToken != null && jwtToken.startsWith("Bearer ")){
+        if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
             //borrar bearer + espacio
             jwtToken = jwtToken.substring(7);
 
-            if(blacklistedTokenService.isTokenBlacklisted(jwtToken)){
+            if (blacklistedTokenService.isTokenBlacklisted(jwtToken)) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is invalidated");
                 return;
             }
@@ -48,7 +48,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             String username = jwtUtils.extractUsername(decodedJWT);
             String authorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
 
-            Collection <? extends GrantedAuthority> authoritiesList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+            Collection<? extends GrantedAuthority> authoritiesList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 
             SecurityContext context = SecurityContextHolder.getContext();
             Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authoritiesList);

@@ -18,12 +18,12 @@ import com.tfi.Econexo.model.logistics.VehicleType;
 import com.tfi.Econexo.service.DriverService;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
-import com.tfi.Econexo.service.auth.AuthService;
-import com.tfi.Econexo.service.auth.PermissionService;
-import com.tfi.Econexo.service.auth.RoleService;
-import com.tfi.Econexo.service.auth.UserService;
+import com.tfi.Econexo.service.auth.*;
+import com.tfi.Econexo.service.impl.auth.AuthServiceImpl;
 import com.tfi.Econexo.service.impl.auth.UserDetailsServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -75,6 +75,9 @@ class AuthenticationControllerTest {
 
     @MockitoBean
     private DriverService driverService;
+
+    @MockitoBean
+    private BlacklistedTokenService blacklistedTokenService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -321,5 +324,24 @@ class AuthenticationControllerTest {
                                 .content(json)
                 )
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void logout_success() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/auth/logout")
+                                .header("Authorization", "Bearer token")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void logout_InvalidRequest_400_WhenThereAreNoHeader() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/auth/logout")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest());
     }
 }
