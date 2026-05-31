@@ -1,5 +1,6 @@
 package com.tfi.Econexo.security.config;
 
+import com.tfi.Econexo.service.auth.BlacklistedTokenService;
 import com.tfi.Econexo.utils.JwtUtils;
 import com.tfi.Econexo.security.config.filter.JwtTokenValidator;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
 
     private final JwtUtils jwtUtils;
+    private final BlacklistedTokenService blacklistedTokenService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -44,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenValidator(jwtUtils, blacklistedTokenService), BasicAuthenticationFilter.class)
                 .build();
     }
 
