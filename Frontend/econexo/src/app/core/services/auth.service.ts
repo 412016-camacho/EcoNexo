@@ -10,6 +10,7 @@ import {
 import {Observable} from 'rxjs';
 import {AuthLoginRequest, AuthResponse} from '../../shared/models/login.model';
 import {NgoRegistrationDTO, NgoResponseDTO, NgoTypeLookup} from '../../shared/models/ngo.model';
+import {DriverRegistrationDTO, DriverResponse} from '../../shared/models/driver.model';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +73,15 @@ export class AuthService {
    */
   registerNgo(ngoData:NgoRegistrationDTO): Observable<NgoResponseDTO>{
     return this.http.post<NgoResponseDTO>(`${this.apiUrl}/register/ngo`, ngoData);
+  }
+
+  /**
+   * Register a new Driver
+   * @param driverData - The driver data to register
+   * @returns An Observable of the registered driver
+   */
+  registerDriver(driverData:DriverRegistrationDTO): Observable<DriverResponse>{
+    return this.http.post<DriverResponse>(`${this.apiUrl}/register/driver`, driverData);
   }
 
   //TODO implementar en el backend
