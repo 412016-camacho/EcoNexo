@@ -6,6 +6,7 @@ import {DashboardDonorComponent} from '../features/dashboard/dashboard-donor/das
 import {NgoFormComponent} from '../features/auth/ngo-form/ngo-form.component';
 import {DashboardNgoComponent} from '../features/dashboard/dashboard-ngo/dashboard-ngo.component';
 import {DriverFormComponent} from '../features/auth/driver-form/driver-form.component';
+import {DashboardDriverComponent} from '../features/dashboard/dashboard-driver/dashboard-driver.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'register/ngo', component: NgoFormComponent },
   { path: 'dashboard/donor', component: DashboardDonorComponent },
   { path: 'dashboard/ngo', component: DashboardNgoComponent },
+  { path: 'dashboard/driver', component: DashboardDriverComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
 ];
