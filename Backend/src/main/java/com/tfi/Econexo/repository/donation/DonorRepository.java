@@ -1,6 +1,6 @@
 package com.tfi.Econexo.repository.donation;
 
-import com.tfi.Econexo.model.donation.Donor;
+import com.tfi.Econexo.model.donation.donor.Donor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

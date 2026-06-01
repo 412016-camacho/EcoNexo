@@ -3,7 +3,7 @@ package com.tfi.Econexo.mappers;
 import com.tfi.Econexo.dto.auth.donor.DonorRegistrationDTO;
 import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
 import com.tfi.Econexo.model.auth.UserSec;
-import com.tfi.Econexo.model.donation.Donor;
+import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.location.Neighborhood;
 
 import org.mapstruct.Mapper;

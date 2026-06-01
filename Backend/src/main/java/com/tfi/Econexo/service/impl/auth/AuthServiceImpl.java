@@ -14,7 +14,7 @@ import com.tfi.Econexo.mappers.UserMapper;
 import com.tfi.Econexo.model.enums.RegistrationStatus;
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.auth.UserSec;
-import com.tfi.Econexo.model.donation.Donor;
+import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.model.logistics.Vehicle;

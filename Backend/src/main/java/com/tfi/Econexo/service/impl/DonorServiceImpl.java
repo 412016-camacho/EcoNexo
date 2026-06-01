@@ -1,6 +1,6 @@
 package com.tfi.Econexo.service.impl;
 
-import com.tfi.Econexo.model.donation.Donor;
+import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.repository.donation.DonorRepository;
 import com.tfi.Econexo.service.DonorService;
 import lombok.RequiredArgsConstructor;
