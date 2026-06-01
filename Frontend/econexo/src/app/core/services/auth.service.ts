@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpRequest} from '@angular/common/http';
 import {environment} from '../../../environments/environment.development';
 import {
   DonorRegistrationRequest,
@@ -7,7 +7,7 @@ import {
   DonorTypeLookup,
   NeighborhoodLookup
 } from '../../shared/models/donor.model';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
 import {AuthLoginRequest, AuthResponse} from '../../shared/models/login.model';
 import {NgoRegistrationDTO, NgoResponseDTO, NgoTypeLookup} from '../../shared/models/ngo.model';
 import {DriverRegistrationDTO, DriverResponse} from '../../shared/models/driver.model';
@@ -23,6 +23,17 @@ export class AuthService {
   private readonly neighborhoodsUrl =`${environment.apiUrl}/v1/neighborhoods/public`;
   private readonly donorsUrl =`${environment.apiUrl}/v1/donors/public/donor-types`;
   private readonly ngosUrl = `${environment.apiUrl}/v1/organizations/public/ngo-types`;
+
+  private currentUserSubject = new BehaviorSubject<boolean>(this.hasToken());
+  public isAuthenticated$ = this.currentUserSubject.asObservable();
+
+  /**
+   * Checks if there is a token in localStorage
+   * @returns {boolean} - True if there is a token, false otherwise
+   */
+  private hasToken(): boolean{
+    return !!localStorage.getItem('econexo_token');
+  }
 
   /**
    * Register a new donor
@@ -58,12 +69,17 @@ export class AuthService {
   }
 
   /**
-   * Login a user
+   * Login a user and store the token in localStorage
    * @param credentials - The user credentials
    * @returns An Observable of the login response
    */
   login(credentials: AuthLoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials);
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      tap((response) => {
+        localStorage.setItem('econexo_token', response.jwt);
+        this.currentUserSubject.next(true);
+      })
+    );
   }
 
   /**
@@ -84,8 +100,33 @@ export class AuthService {
     return this.http.post<DriverResponse>(`${this.apiUrl}/register/driver`, driverData);
   }
 
+  /**
+   * Logout the current user
+   * @param request - The logout request
+   * @returns An Observable of the logout response
+   */
+  logout(): Observable<any> {
+    return this.http.post<void>(`${this.apiUrl}/logout`, {}).pipe(
+      tap(() => {
+        this.clearLocalSession();
+      }),
+      catchError((error) => {
+        this.clearLocalSession();
+        return throwError(() => error);
+      })
+    );
+  }
+
   //TODO implementar en el backend
   getNgoProfile(): Observable<NgoResponseDTO>{
     return this.http.get<NgoResponseDTO>(`${this.apiUrl}/profile`);
+  }
+
+  /**
+   * Clears the local session by removing the token and updating the authentication state
+   */
+  private clearLocalSession(){
+    localStorage.removeItem('econexo_token');
+    this.currentUserSubject.next(false);
   }
 }
