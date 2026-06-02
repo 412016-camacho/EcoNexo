@@ -3,15 +3,15 @@ package com.tfi.Econexo.mappers;
 import com.tfi.Econexo.dto.auth.donor.DonorRegistrationDTO;
 import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
 import com.tfi.Econexo.model.auth.UserSec;
-import com.tfi.Econexo.model.donation.Donor;
-import com.tfi.Econexo.model.donation.DonorType;
+import com.tfi.Econexo.model.donation.donor.Donor;
+import com.tfi.Econexo.model.donation.donor.DonorType;
 import com.tfi.Econexo.model.location.Neighborhood;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-31T17:58:10-0300",
+    date = "2026-06-02T11:42:37-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component

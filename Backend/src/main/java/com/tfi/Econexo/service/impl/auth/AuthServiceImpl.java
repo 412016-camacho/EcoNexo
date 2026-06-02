@@ -123,7 +123,6 @@ public class AuthServiceImpl implements AuthService {
         int age = Period.between(driverDTO.birthDate(), LocalDate.now()).getYears();
         if(age < 18){throw new IllegalArgumentException("Driver must be at least 18 years old");}
 
-
         if(userService.findByEmail(driverDTO.email()).isPresent() || driverService.findByTaxId(driverDTO.taxId()).isPresent()){
             throw new ConflictException("Driver already exists.");
         }
