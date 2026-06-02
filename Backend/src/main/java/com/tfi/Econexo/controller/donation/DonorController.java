@@ -1,4 +1,4 @@
-package com.tfi.Econexo.controller.donor;
+package com.tfi.Econexo.controller.donation;
 
 import com.tfi.Econexo.model.donation.donor.DonorType;
 import com.tfi.Econexo.utils.EnumUtils;
