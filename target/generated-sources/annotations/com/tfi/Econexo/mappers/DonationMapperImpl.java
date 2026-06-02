@@ -9,35 +9,19 @@ import com.tfi.Econexo.model.donation.catalog.Product;
 import com.tfi.Econexo.model.donation.catalog.ProductType;
 import com.tfi.Econexo.model.donation.catalog.UnitOfMeasure;
 import com.tfi.Econexo.model.donation.donor.Donor;
-import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-06-02T11:42:37-0300",
+    date = "2026-06-02T16:10:20-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
 public class DonationMapperImpl implements DonationMapper {
-
-    private final DatatypeFactory datatypeFactory;
-
-    public DonationMapperImpl() {
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        }
-        catch ( DatatypeConfigurationException ex ) {
-            throw new RuntimeException( ex );
-        }
-    }
 
     @Override
     public DonationResponseDTO toResponseDTO(Donation donation) {
@@ -46,18 +30,20 @@ public class DonationMapperImpl implements DonationMapper {
         }
 
         String businessName = null;
+        List<DonationItemResponseDTO> items = null;
+        LocalDateTime createdAt = null;
         Long id = null;
         LocalDateTime pickupStartTime = null;
         LocalDateTime pickupEndTime = null;
 
         businessName = donationDonorTradeName( donation );
+        items = donationItemListToDonationItemResponseDTOList( donation.getDonationItems() );
+        createdAt = donation.getCreatedDate();
         id = donation.getId();
         pickupStartTime = donation.getPickupStartTime();
         pickupEndTime = donation.getPickupEndTime();
 
         String status = donation.getStatus().name();
-        LocalDateTime createdAt = null;
-        List<DonationItemResponseDTO> items = null;
 
         DonationResponseDTO donationResponseDTO = new DonationResponseDTO( id, status, pickupStartTime, pickupEndTime, createdAt, businessName, items );
 
@@ -91,7 +77,7 @@ public class DonationMapperImpl implements DonationMapper {
         quantity = item.getQuantity();
         batchNumber = item.getBatchNumber();
         productionDate = item.getProductionDate();
-        expirationDate = xmlGregorianCalendarToLocalDateTime( localDateToXmlGregorianCalendar( item.getExpirationDate() ) );
+        expirationDate = item.getExpirationDate();
         deliveryTemperature = item.getDeliveryTemperature();
         allergenWarning = item.getAllergenWarning();
         observations = item.getObservations();
@@ -99,64 +85,6 @@ public class DonationMapperImpl implements DonationMapper {
         DonationItemResponseDTO donationItemResponseDTO = new DonationItemResponseDTO( id, productName, category, productType, quantity, unitOfMeasure, batchNumber, productionDate, expirationDate, deliveryTemperature, allergenWarning, observations );
 
         return donationItemResponseDTO;
-    }
-
-    private XMLGregorianCalendar localDateToXmlGregorianCalendar( LocalDate localDate ) {
-        if ( localDate == null ) {
-            return null;
-        }
-
-        return datatypeFactory.newXMLGregorianCalendarDate(
-            localDate.getYear(),
-            localDate.getMonthValue(),
-            localDate.getDayOfMonth(),
-            DatatypeConstants.FIELD_UNDEFINED );
-    }
-
-    private static LocalDateTime xmlGregorianCalendarToLocalDateTime( XMLGregorianCalendar xcal ) {
-        if ( xcal == null ) {
-            return null;
-        }
-
-        if ( xcal.getYear() != DatatypeConstants.FIELD_UNDEFINED
-            && xcal.getMonth() != DatatypeConstants.FIELD_UNDEFINED
-            && xcal.getDay() != DatatypeConstants.FIELD_UNDEFINED
-            && xcal.getHour() != DatatypeConstants.FIELD_UNDEFINED
-            && xcal.getMinute() != DatatypeConstants.FIELD_UNDEFINED
-        ) {
-            if ( xcal.getSecond() != DatatypeConstants.FIELD_UNDEFINED
-                && xcal.getMillisecond() != DatatypeConstants.FIELD_UNDEFINED ) {
-                return LocalDateTime.of(
-                    xcal.getYear(),
-                    xcal.getMonth(),
-                    xcal.getDay(),
-                    xcal.getHour(),
-                    xcal.getMinute(),
-                    xcal.getSecond(),
-                    Duration.ofMillis( xcal.getMillisecond() ).getNano()
-                );
-            }
-            else if ( xcal.getSecond() != DatatypeConstants.FIELD_UNDEFINED ) {
-                return LocalDateTime.of(
-                    xcal.getYear(),
-                    xcal.getMonth(),
-                    xcal.getDay(),
-                    xcal.getHour(),
-                    xcal.getMinute(),
-                    xcal.getSecond()
-                );
-            }
-            else {
-                return LocalDateTime.of(
-                    xcal.getYear(),
-                    xcal.getMonth(),
-                    xcal.getDay(),
-                    xcal.getHour(),
-                    xcal.getMinute()
-                );
-            }
-        }
-        return null;
     }
 
     private String donationDonorTradeName(Donation donation) {
@@ -172,6 +100,19 @@ public class DonationMapperImpl implements DonationMapper {
             return null;
         }
         return tradeName;
+    }
+
+    protected List<DonationItemResponseDTO> donationItemListToDonationItemResponseDTOList(List<DonationItem> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<DonationItemResponseDTO> list1 = new ArrayList<DonationItemResponseDTO>( list.size() );
+        for ( DonationItem donationItem : list ) {
+            list1.add( toItemResponseDTO( donationItem ) );
+        }
+
+        return list1;
     }
 
     private String itemProductName(DonationItem donationItem) {

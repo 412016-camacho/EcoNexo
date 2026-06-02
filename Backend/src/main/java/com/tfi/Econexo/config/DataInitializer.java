@@ -2,10 +2,18 @@ package com.tfi.Econexo.config;
 
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.auth.UserSec;
+import com.tfi.Econexo.model.donation.catalog.Category;
+import com.tfi.Econexo.model.donation.catalog.Product;
+import com.tfi.Econexo.model.donation.catalog.ProductType;
+import com.tfi.Econexo.model.donation.catalog.UnitOfMeasure;
 import com.tfi.Econexo.model.location.City;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.repository.auth.RoleRepository;
 import com.tfi.Econexo.repository.auth.UserRepository;
+import com.tfi.Econexo.repository.donation.catalog.CategoryRepository;
+import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
+import com.tfi.Econexo.repository.donation.catalog.ProductTypeRepository;
+import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
 import com.tfi.Econexo.repository.location.CityRepository;
 import com.tfi.Econexo.repository.location.NeighborhoodRepository;
 import jakarta.transaction.Transactional;
@@ -26,6 +34,11 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final CityRepository cityRepository;
     private final NeighborhoodRepository neighborhoodRepository;
+
+    private final CategoryRepository categoryRepository;
+    private final UnitOfMeasureRepository unitOfMeasureRepository;
+    private final ProductTypeRepository productTypeRepository;
+    private final ProductRepository productRepository;
 
     @Override
     @Transactional
@@ -74,6 +87,52 @@ public class DataInitializer implements CommandLineRunner {
 
             neighborhoodRepository.saveAll(List.of(nvaCba, gralPaz));
             System.out.println("[DataInitializer] Ciudades y Barrios base creados con éxito.");
+        }
+
+        if (productRepository.count() == 0) {
+            UnitOfMeasure kg = new UnitOfMeasure();
+            kg.setDescription("Kilogramos");
+
+            UnitOfMeasure un = new UnitOfMeasure();
+            un.setDescription("Unidades");
+
+            unitOfMeasureRepository.saveAll(List.of(kg, un));
+
+            ProductType perishable = new ProductType();
+            perishable.setDescription("Perecedero");
+
+            ProductType nonPerishable = new ProductType();
+            nonPerishable.setDescription("No Perecedero");
+
+            productTypeRepository.saveAll(List.of(perishable, nonPerishable));
+
+            Category bakery = new Category();
+            bakery.setDescription("Panificados y Pastelería");
+
+            Category dairy = new Category();
+            dairy.setDescription("Lácteos");
+
+            categoryRepository.saveAll(List.of(bakery, dairy));
+
+            Product fineDoughs = new Product();
+            fineDoughs.setName("Masas Finas");
+            fineDoughs.setRequiresRefrigeration(true);
+            fineDoughs.setOriginalPackaging(true);
+            fineDoughs.setUnitOfMeasure(kg);
+            fineDoughs.setProductType(perishable);
+            fineDoughs.setCategory(bakery);
+
+            Product bread = new Product();
+            bread.setName("Pan Francés");
+            bread.setRequiresRefrigeration(false);
+            bread.setOriginalPackaging(false);
+            bread.setUnitOfMeasure(kg);
+            bread.setProductType(perishable);
+            bread.setCategory(bakery);
+
+            productRepository.saveAll(List.of(fineDoughs, bread));
+
+            System.out.println("[DataInitializer] Catálogo de alimentos paramétrico creado con éxito.");
         }
     }
 

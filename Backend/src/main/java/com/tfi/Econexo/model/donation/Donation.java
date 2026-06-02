@@ -33,7 +33,7 @@ public class Donation extends BaseEntity {
     private LocalDateTime pickupEndTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ngo_id", nullable = false)
+    @JoinColumn(name = "ngo_id")
     private Ngo ngo;
 
     @ManyToOne(fetch = FetchType.LAZY)
