@@ -1,5 +1,6 @@
 package com.tfi.Econexo.mappers;
 
+import com.tfi.Econexo.dto.donation.DonationItemRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationItemResponseDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
 import com.tfi.Econexo.model.donation.Donation;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-06-02T16:10:20-0300",
+    date = "2026-06-03T09:44:59-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -48,6 +49,25 @@ public class DonationMapperImpl implements DonationMapper {
         DonationResponseDTO donationResponseDTO = new DonationResponseDTO( id, status, pickupStartTime, pickupEndTime, createdAt, businessName, items );
 
         return donationResponseDTO;
+    }
+
+    @Override
+    public DonationItem toItemEntity(DonationItemRequestDTO itemRequestDTO) {
+        if ( itemRequestDTO == null ) {
+            return null;
+        }
+
+        DonationItem donationItem = new DonationItem();
+
+        donationItem.setQuantity( itemRequestDTO.quantity() );
+        donationItem.setBatchNumber( itemRequestDTO.batchNumber() );
+        donationItem.setProductionDate( itemRequestDTO.productionDate() );
+        donationItem.setExpirationDate( itemRequestDTO.expirationDate() );
+        donationItem.setDeliveryTemperature( itemRequestDTO.deliveryTemperature() );
+        donationItem.setAllergenWarning( itemRequestDTO.allergenWarning() );
+        donationItem.setObservations( itemRequestDTO.observations() );
+
+        return donationItem;
     }
 
     @Override

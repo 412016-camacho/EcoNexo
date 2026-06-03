@@ -48,11 +48,9 @@ public class DonationServiceImpl implements DonationService {
 
             if(coords != null){
                 Point locationPoint = GeometryUtils.createPoint(coords.lng(), coords.lat());
-
                 donor.setLocation(locationPoint);
                 donorService.save(donor);
             }
-
         }
 
         Donation donation = new Donation();
@@ -60,22 +58,12 @@ public class DonationServiceImpl implements DonationService {
         donation.setPickupStartTime(donationRequestDTO.pickupStartTime());
         donation.setPickupEndTime(donationRequestDTO.pickupEndTime());
         donation.setStatus(DonationStatus.AVAILABLE);
-
         List<DonationItem> items = donationRequestDTO.items().stream().map(itemDto -> {
-
             Product product = productRepository.findById(itemDto.productId())
                     .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
-            DonationItem item = new DonationItem();
+            DonationItem item = donationMapper.toItemEntity(itemDto);
             item.setDonation(donation);
             item.setProduct(product);
-            item.setQuantity(itemDto.quantity());
-            item.setBatchNumber(itemDto.batchNumber());
-            item.setProductionDate(itemDto.productionDate());
-            item.setExpirationDate(itemDto.expirationDate());
-            item.setDeliveryTemperature(itemDto.deliveryTemperature());
-            item.setAllergenWarning(itemDto.allergenWarning());
-            item.setObservations(itemDto.observations());
 
             return  item;
         }).toList();
