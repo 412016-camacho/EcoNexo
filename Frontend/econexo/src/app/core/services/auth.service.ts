@@ -102,7 +102,6 @@ export class AuthService {
 
   /**
    * Logout the current user
-   * @param request - The logout request
    * @returns An Observable of the logout response
    */
   logout(): Observable<any> {
