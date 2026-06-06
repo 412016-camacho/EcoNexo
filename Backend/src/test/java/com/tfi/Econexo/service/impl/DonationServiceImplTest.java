@@ -16,6 +16,7 @@ import com.tfi.Econexo.model.location.City;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.repository.donation.DonationRepository;
 import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
+import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
 import com.tfi.Econexo.service.DonorService;
 import com.tfi.Econexo.utils.GeometryUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -47,6 +48,7 @@ class DonationServiceImplTest {
     @Mock DonorService donorService;
     @Mock GeocodingService geocodingService;
     @Mock DonationMapper donationMapper;
+    @Mock UnitOfMeasureRepository unitOfMeasureRepository;
     @InjectMocks DonationServiceImpl donationService;
 
     @Mock Authentication authentication;
@@ -65,7 +67,7 @@ class DonationServiceImplTest {
     Product product;
     ProductType productType;
     Category category;
-    UnitOfMeasure unitOfMeasure;
+    UnitOfMeasure uom;
 
 
     @BeforeEach
@@ -80,8 +82,11 @@ class DonationServiceImplTest {
         city.setName("Córdoba");
         neighborhood.setCity(city);
 
+        uom = new UnitOfMeasure("kg");
+        uom.setId(1L);
+
         donationItemRequestDTO = new DonationItemRequestDTO(1L, 10.00, "123456789", LocalDateTime.now(),
-                LocalDateTime.now().plusDays(2), "10", "This product contains peanuts", "This product is organic");
+                LocalDateTime.now().plusDays(2), "10", "This product contains peanuts", "This product is organic", "description", uom.getId());
         donationItemResponseDTO = new DonationItemResponseDTO(1L, "Masas finas", "Panadería", "Panificados",
                 10.0, "unidades", "1241", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "24", "This product contains peanuts", "This product is organic");
         donationRequestDTO = new DonationRequestDTO(LocalDateTime.now(), LocalDateTime.now(), List.of(donationItemRequestDTO));
@@ -101,8 +106,7 @@ class DonationServiceImplTest {
 
         productType = new ProductType();
         category = new Category();
-        unitOfMeasure = new UnitOfMeasure();
-        product = new Product("Masas finas", true, true, productType, category, unitOfMeasure);
+        product = new Product("Masas finas", true, true, productType, category);
     }
 
     @Test
@@ -110,6 +114,7 @@ class DonationServiceImplTest {
         when(donorService.findByUserEmail(any())).thenReturn(Optional.of(donor));
         when(geocodingService.getCoordinates(anyString())).thenReturn(new GeocodingService.Coordinates(-31.983, -65.000));
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(unitOfMeasureRepository.findById(any())).thenReturn(Optional.of(uom));
         when(donationMapper.toItemEntity(any())).thenReturn(donationItem);
         when(donationRepository.save(any())).thenReturn(donation);
         when(donationMapper.toResponseDTO(any())).thenReturn(donationResponseDTO);
@@ -129,6 +134,7 @@ class DonationServiceImplTest {
         donor.setLocation(existingLocation);
 
         when(donorService.findByUserEmail(any())).thenReturn(Optional.of(donor));
+        when(unitOfMeasureRepository.findById(any())).thenReturn(Optional.of(uom));
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(donationMapper.toItemEntity(any())).thenReturn(donationItem);
         when(donationRepository.save(any())).thenReturn(donation);
@@ -163,6 +169,7 @@ class DonationServiceImplTest {
     void donate_WhenGeocodingFails_ShouldCreateAndSaveDonation(){
      when(donorService.findByUserEmail(any())).thenReturn(Optional.of(donor));
      when(geocodingService.getCoordinates(anyString())).thenReturn(null);
+     when(unitOfMeasureRepository.findById(any())).thenReturn(Optional.of(uom));
      when(productRepository.findById(any())).thenReturn(Optional.of(product));
      when(donationMapper.toItemEntity(any())).thenReturn(donationItem);
      when(donationRepository.save(any())).thenReturn(donation);

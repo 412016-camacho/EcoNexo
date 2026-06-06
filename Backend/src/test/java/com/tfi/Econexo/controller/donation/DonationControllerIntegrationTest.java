@@ -5,6 +5,7 @@ import com.tfi.Econexo.dto.donation.DonationItemRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.catalog.Product;
+import com.tfi.Econexo.model.donation.catalog.UnitOfMeasure;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.location.City;
 import com.tfi.Econexo.model.location.Neighborhood;
@@ -15,7 +16,6 @@ import com.tfi.Econexo.repository.location.CityRepository;
 import com.tfi.Econexo.repository.location.NeighborhoodRepository;
 import com.tfi.Econexo.service.impl.GeocodingService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +54,13 @@ class DonationControllerIntegrationTest {
     @MockitoBean private GeocodingService geocodingService;
 
     private Long productId;
+    UnitOfMeasure uom;
 
     @BeforeEach
     void setUp(){
+        uom  = new UnitOfMeasure("Test");
+        uom.setId(1L);
+
         UserSec testUser = new UserSec();
         testUser.setEmail("test@donor.com");
         testUser.setPassword("password");
@@ -91,7 +95,7 @@ class DonationControllerIntegrationTest {
     void donate_ValidRequest_ShouldReturn201Created() throws Exception{
         DonationItemRequestDTO itemDto = new DonationItemRequestDTO(productId, 10.00,
                 "LOTE-123", LocalDateTime.now(), LocalDateTime.now().plusDays(2),
-                "10", "Ninguna", "Test");
+                "10", "Ninguna", "Test", "Test",uom.getId());
         DonationRequestDTO requestDTO = new DonationRequestDTO(LocalDateTime.now(),
                 LocalDateTime.now().plusHours(3), List.of(itemDto));
 
@@ -113,7 +117,7 @@ class DonationControllerIntegrationTest {
     void donate_InvalidRequest_ShouldReturn400BadRequest() throws Exception{
         DonationItemRequestDTO invalidItemDto = new DonationItemRequestDTO(null, 10.00,
                 "LOTE-MALO", LocalDateTime.now(), LocalDateTime.now().minusDays(5),
-                "10","Ninguna", "Test");
+                "10","Ninguna", "Test", "Test", uom.getId());
         DonationRequestDTO invalidRequestDTO = new DonationRequestDTO(LocalDateTime.now(),
                 LocalDateTime.now().plusHours(3), List.of(invalidItemDto));
 

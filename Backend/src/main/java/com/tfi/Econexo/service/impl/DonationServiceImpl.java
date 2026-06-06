@@ -6,10 +6,12 @@ import com.tfi.Econexo.mappers.DonationMapper;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
 import com.tfi.Econexo.model.donation.catalog.Product;
+import com.tfi.Econexo.model.donation.catalog.UnitOfMeasure;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.enums.DonationStatus;
 import com.tfi.Econexo.repository.donation.DonationRepository;
 import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
+import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
 import com.tfi.Econexo.service.DonationService;
 import com.tfi.Econexo.service.DonorService;
 import com.tfi.Econexo.utils.GeometryUtils;
@@ -30,6 +32,8 @@ public class DonationServiceImpl implements DonationService {
     private final GeocodingService geocodingService;
     private final DonorService donorService;
     private final ProductRepository productRepository;
+    private final UnitOfMeasureRepository unitOfMeasureRepository;
+
     private final DonationMapper donationMapper;
 
 
@@ -61,9 +65,14 @@ public class DonationServiceImpl implements DonationService {
         List<DonationItem> items = donationRequestDTO.items().stream().map(itemDto -> {
             Product product = productRepository.findById(itemDto.productId())
                     .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+            UnitOfMeasure uom =unitOfMeasureRepository.findById(itemDto.unitOfMeasureId())
+                    .orElseThrow(() -> new EntityNotFoundException("Unit of measure not found"));
+
             DonationItem item = donationMapper.toItemEntity(itemDto);
             item.setDonation(donation);
             item.setProduct(product);
+            item.setUnitOfMeasure(uom);
+            item.setDescription(itemDto.description());
 
             return  item;
         }).toList();

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-06-03T09:44:59-0300",
+    date = "2026-06-06T11:14:10-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -59,6 +59,7 @@ public class DonationMapperImpl implements DonationMapper {
 
         DonationItem donationItem = new DonationItem();
 
+        donationItem.setDescription( itemRequestDTO.description() );
         donationItem.setQuantity( itemRequestDTO.quantity() );
         donationItem.setBatchNumber( itemRequestDTO.batchNumber() );
         donationItem.setProductionDate( itemRequestDTO.productionDate() );
@@ -77,9 +78,9 @@ public class DonationMapperImpl implements DonationMapper {
         }
 
         String productName = null;
-        String unitOfMeasure = null;
         String category = null;
         String productType = null;
+        String unitOfMeasure = null;
         Long id = null;
         Double quantity = null;
         String batchNumber = null;
@@ -90,9 +91,9 @@ public class DonationMapperImpl implements DonationMapper {
         String observations = null;
 
         productName = itemProductName( item );
-        unitOfMeasure = itemProductUnitOfMeasureDescription( item );
         category = itemProductCategoryDescription( item );
         productType = itemProductProductTypeDescription( item );
+        unitOfMeasure = itemUnitOfMeasureDescription( item );
         id = item.getId();
         quantity = item.getQuantity();
         batchNumber = item.getBatchNumber();
@@ -150,25 +151,6 @@ public class DonationMapperImpl implements DonationMapper {
         return name;
     }
 
-    private String itemProductUnitOfMeasureDescription(DonationItem donationItem) {
-        if ( donationItem == null ) {
-            return null;
-        }
-        Product product = donationItem.getProduct();
-        if ( product == null ) {
-            return null;
-        }
-        UnitOfMeasure unitOfMeasure = product.getUnitOfMeasure();
-        if ( unitOfMeasure == null ) {
-            return null;
-        }
-        String description = unitOfMeasure.getDescription();
-        if ( description == null ) {
-            return null;
-        }
-        return description;
-    }
-
     private String itemProductCategoryDescription(DonationItem donationItem) {
         if ( donationItem == null ) {
             return null;
@@ -201,6 +183,21 @@ public class DonationMapperImpl implements DonationMapper {
             return null;
         }
         String description = productType.getDescription();
+        if ( description == null ) {
+            return null;
+        }
+        return description;
+    }
+
+    private String itemUnitOfMeasureDescription(DonationItem donationItem) {
+        if ( donationItem == null ) {
+            return null;
+        }
+        UnitOfMeasure unitOfMeasure = donationItem.getUnitOfMeasure();
+        if ( unitOfMeasure == null ) {
+            return null;
+        }
+        String description = unitOfMeasure.getDescription();
         if ( description == null ) {
             return null;
         }
