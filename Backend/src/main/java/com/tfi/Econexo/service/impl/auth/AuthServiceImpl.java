@@ -14,12 +14,12 @@ import com.tfi.Econexo.mappers.UserMapper;
 import com.tfi.Econexo.model.enums.RegistrationStatus;
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.auth.UserSec;
-import com.tfi.Econexo.model.donation.Donor;
+import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.model.logistics.Vehicle;
 import com.tfi.Econexo.model.ngo.Ngo;
-import com.tfi.Econexo.service.DonorService;
+import com.tfi.Econexo.service.donation.DonorService;
 import com.tfi.Econexo.service.DriverService;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
@@ -122,7 +122,6 @@ public class AuthServiceImpl implements AuthService {
         if(driverDTO == null){ throw new IllegalArgumentException("Driver registration request cannot be null");}
         int age = Period.between(driverDTO.birthDate(), LocalDate.now()).getYears();
         if(age < 18){throw new IllegalArgumentException("Driver must be at least 18 years old");}
-
 
         if(userService.findByEmail(driverDTO.email()).isPresent() || driverService.findByTaxId(driverDTO.taxId()).isPresent()){
             throw new ConflictException("Driver already exists.");
