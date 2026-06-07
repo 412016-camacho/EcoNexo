@@ -1,5 +1,6 @@
 package com.tfi.Econexo.mappers;
 
+import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
 import com.tfi.Econexo.dto.donation.item.DonationItemRequestDTO;
 import com.tfi.Econexo.dto.donation.item.DonationItemResponseDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
@@ -28,4 +29,11 @@ public interface DonationMapper {
     @Mapping(target = "productType", source = "product.productType.description")
     @Mapping(source = "unitOfMeasure.description", target = "unitOfMeasure")
     DonationItemResponseDTO toItemResponseDTO(DonationItem item);
+
+
+    @Mapping(target = "title", source = "product.name")
+    @Mapping(target = "businessName", source = "donation.donor.tradeName")
+    @Mapping(target = "unitOfMeasure", source = "unitOfMeasure.description")
+    @Mapping(target = "requiresRefrigeration", source = "product.requiresRefrigeration")
+    DonationSummaryResponseDTO toSummaryResponseDTO(DonationItem item);
 }

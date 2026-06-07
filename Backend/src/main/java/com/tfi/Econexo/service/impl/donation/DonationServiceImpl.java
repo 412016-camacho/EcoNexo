@@ -2,6 +2,7 @@ package com.tfi.Econexo.service.impl.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
+import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
 import com.tfi.Econexo.mappers.DonationMapper;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
@@ -9,6 +10,7 @@ import com.tfi.Econexo.model.donation.catalog.Product;
 import com.tfi.Econexo.model.donation.catalog.UnitOfMeasure;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.enums.DonationStatus;
+import com.tfi.Econexo.repository.donation.DonationItemRepository;
 import com.tfi.Econexo.repository.donation.DonationRepository;
 import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
 import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
@@ -34,6 +36,7 @@ public class DonationServiceImpl implements DonationService {
     private final DonorService donorService;
     private final ProductRepository productRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
+    private final DonationItemRepository donationItemRepository;
 
     private final DonationMapper donationMapper;
 
@@ -82,5 +85,13 @@ public class DonationServiceImpl implements DonationService {
         Donation savedDonation = donationRepository.save(donation);
 
         return donationMapper.toResponseDTO(savedDonation);
+    }
+
+    @Override
+    public List<DonationSummaryResponseDTO> getAvailableDonationsSummary() {
+        return donationItemRepository.findByDonation_StatusOrderByExpirationDateAsc(DonationStatus.AVAILABLE)
+                .stream()
+                .map(donationMapper::toSummaryResponseDTO)
+                .toList();
     }
 }
