@@ -1,4 +1,4 @@
-package com.tfi.Econexo.service;
+package com.tfi.Econexo.service.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;

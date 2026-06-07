@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-06-06T11:14:10-0300",
+    date = "2026-06-06T20:05:56-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -89,6 +89,7 @@ public class DonationMapperImpl implements DonationMapper {
         String deliveryTemperature = null;
         String allergenWarning = null;
         String observations = null;
+        String description = null;
 
         productName = itemProductName( item );
         category = itemProductCategoryDescription( item );
@@ -102,8 +103,9 @@ public class DonationMapperImpl implements DonationMapper {
         deliveryTemperature = item.getDeliveryTemperature();
         allergenWarning = item.getAllergenWarning();
         observations = item.getObservations();
+        description = item.getDescription();
 
-        DonationItemResponseDTO donationItemResponseDTO = new DonationItemResponseDTO( id, productName, category, productType, quantity, unitOfMeasure, batchNumber, productionDate, expirationDate, deliveryTemperature, allergenWarning, observations );
+        DonationItemResponseDTO donationItemResponseDTO = new DonationItemResponseDTO( id, productName, category, productType, quantity, unitOfMeasure, batchNumber, productionDate, expirationDate, deliveryTemperature, allergenWarning, observations, description );
 
         return donationItemResponseDTO;
     }

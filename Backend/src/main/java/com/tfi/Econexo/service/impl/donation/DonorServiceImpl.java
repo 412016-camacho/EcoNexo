@@ -1,8 +1,8 @@
-package com.tfi.Econexo.service.impl;
+package com.tfi.Econexo.service.impl.donation;
 
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.repository.donation.DonorRepository;
-import com.tfi.Econexo.service.DonorService;
+import com.tfi.Econexo.service.donation.DonorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

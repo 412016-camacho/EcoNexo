@@ -1,4 +1,4 @@
-package com.tfi.Econexo.service;
+package com.tfi.Econexo.service.donation;
 
 import com.tfi.Econexo.model.donation.donor.Donor;
 

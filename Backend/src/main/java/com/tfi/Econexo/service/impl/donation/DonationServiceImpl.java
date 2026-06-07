@@ -1,4 +1,4 @@
-package com.tfi.Econexo.service.impl;
+package com.tfi.Econexo.service.impl.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
@@ -12,8 +12,9 @@ import com.tfi.Econexo.model.enums.DonationStatus;
 import com.tfi.Econexo.repository.donation.DonationRepository;
 import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
 import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
-import com.tfi.Econexo.service.DonationService;
-import com.tfi.Econexo.service.DonorService;
+import com.tfi.Econexo.service.donation.DonationService;
+import com.tfi.Econexo.service.donation.DonorService;
+import com.tfi.Econexo.service.impl.GeocodingService;
 import com.tfi.Econexo.utils.GeometryUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
