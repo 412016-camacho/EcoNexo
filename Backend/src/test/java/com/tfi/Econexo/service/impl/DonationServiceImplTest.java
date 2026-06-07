@@ -17,7 +17,8 @@ import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.repository.donation.DonationRepository;
 import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
 import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
-import com.tfi.Econexo.service.DonorService;
+import com.tfi.Econexo.service.donation.DonorService;
+import com.tfi.Econexo.service.impl.donation.DonationServiceImpl;
 import com.tfi.Econexo.utils.GeometryUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +50,8 @@ class DonationServiceImplTest {
     @Mock GeocodingService geocodingService;
     @Mock DonationMapper donationMapper;
     @Mock UnitOfMeasureRepository unitOfMeasureRepository;
-    @InjectMocks DonationServiceImpl donationService;
+    @InjectMocks
+    DonationServiceImpl donationService;
 
     @Mock Authentication authentication;
     @Mock SecurityContext securityContext;
