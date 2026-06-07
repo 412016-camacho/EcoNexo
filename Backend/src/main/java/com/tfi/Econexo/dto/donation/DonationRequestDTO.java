@@ -1,5 +1,6 @@
 package com.tfi.Econexo.dto.donation;
 
+import com.tfi.Econexo.dto.donation.item.DonationItemRequestDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

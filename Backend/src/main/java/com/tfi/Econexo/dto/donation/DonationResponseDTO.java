@@ -1,5 +1,6 @@
 package com.tfi.Econexo.dto.donation;
 
+import com.tfi.Econexo.dto.donation.item.DonationItemResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
