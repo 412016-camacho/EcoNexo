@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-06-07T08:05:55-0300",
+    date = "2026-06-07T18:44:44-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -122,6 +122,8 @@ public class DonationMapperImpl implements DonationMapper {
         String unitOfMeasure = null;
         boolean requiresRefrigeration = false;
         Long id = null;
+        String description = null;
+        String allergenWarning = null;
         Integer quantity = null;
         LocalDateTime expirationDate = null;
 
@@ -130,12 +132,14 @@ public class DonationMapperImpl implements DonationMapper {
         unitOfMeasure = itemUnitOfMeasureDescription( item );
         requiresRefrigeration = itemProductRequiresRefrigeration( item );
         id = item.getId();
+        description = item.getDescription();
+        allergenWarning = item.getAllergenWarning();
         if ( item.getQuantity() != null ) {
             quantity = item.getQuantity().intValue();
         }
         expirationDate = item.getExpirationDate();
 
-        DonationSummaryResponseDTO donationSummaryResponseDTO = new DonationSummaryResponseDTO( id, title, businessName, quantity, unitOfMeasure, expirationDate, requiresRefrigeration );
+        DonationSummaryResponseDTO donationSummaryResponseDTO = new DonationSummaryResponseDTO( id, title, description, allergenWarning, businessName, quantity, unitOfMeasure, expirationDate, requiresRefrigeration );
 
         return donationSummaryResponseDTO;
     }

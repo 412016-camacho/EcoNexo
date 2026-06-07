@@ -25,7 +25,7 @@ export class DashboardDonorComponent implements OnInit{
   userName$ = this.authService.currentUser$.pipe(
     map(profile => {
       if(profile && 'tradeName' in profile){
-        return profile;
+        return profile.tradeName;
       }
       return '';
     })

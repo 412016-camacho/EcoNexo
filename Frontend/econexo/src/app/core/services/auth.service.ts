@@ -39,6 +39,14 @@ export class AuthService {
   }
 
   /**
+   * Sets the current user
+   * @param user - The user to set
+   */
+  setCurrentUser(user: DonorResponse | NgoResponseDTO | DriverResponse | null){
+    this.currentUserSubject.next(user);
+  }
+
+  /**
    * Register a new donor
    * @param donorData - The donor data to register
    * @returns An Observable of the registered donor
@@ -119,15 +127,6 @@ export class AuthService {
     );
   }
 
-  //TODO implementar en el backend
-  //TODO ajustar url para NGO
-  getNgoProfile(): Observable<NgoResponseDTO>{
-    return this.http.get<NgoResponseDTO>(`${this.apiUrl}/profile`).pipe(
-      tap((profile) => {
-        this.currentUserSubject.next(profile);
-      })
-    );
-  }
   //TODO implementar en el backend
   //TODO ajustar url para DRIVER
   getDriverProfile(): Observable<DriverResponse>{
