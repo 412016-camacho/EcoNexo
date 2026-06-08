@@ -3,6 +3,7 @@ package com.tfi.Econexo.service.impl.donation;
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
 import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
+import com.tfi.Econexo.exception.ConflictException;
 import com.tfi.Econexo.mappers.DonationMapper;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
@@ -10,10 +11,12 @@ import com.tfi.Econexo.model.donation.catalog.Product;
 import com.tfi.Econexo.model.donation.catalog.UnitOfMeasure;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.enums.DonationStatus;
+import com.tfi.Econexo.model.ngo.Ngo;
 import com.tfi.Econexo.repository.donation.DonationItemRepository;
 import com.tfi.Econexo.repository.donation.DonationRepository;
 import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
 import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
+import com.tfi.Econexo.repository.ngo.NgoRepository;
 import com.tfi.Econexo.service.donation.DonationService;
 import com.tfi.Econexo.service.donation.DonorService;
 import com.tfi.Econexo.service.impl.GeocodingService;
@@ -37,6 +40,7 @@ public class DonationServiceImpl implements DonationService {
     private final ProductRepository productRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
     private final DonationItemRepository donationItemRepository;
+    private final NgoRepository ngoRepository;
 
     private final DonationMapper donationMapper;
 
@@ -89,9 +93,28 @@ public class DonationServiceImpl implements DonationService {
 
     @Override
     public List<DonationSummaryResponseDTO> getAvailableDonationsSummary() {
-        return donationItemRepository.findByDonation_StatusOrderByExpirationDateAsc(DonationStatus.AVAILABLE)
-                .stream()
+        List<Donation> donations = donationRepository.findByStatus(DonationStatus.AVAILABLE);
+
+        return donations.stream()
                 .map(donationMapper::toSummaryResponseDTO)
                 .toList();
+    }
+
+    @Transactional
+    @Override
+    public void requestDonation(Long donationId, String ngoEmail) {
+        Ngo ngo = ngoRepository.findByUser_Email(ngoEmail)
+                .orElseThrow(() -> new EntityNotFoundException("Ngo not found"));
+
+        Donation donation = donationRepository.findById(donationId)
+                .orElseThrow(() -> new EntityNotFoundException("Donation not found"));
+
+        if(donation.getStatus() != DonationStatus.AVAILABLE){
+            throw new ConflictException("This donation was already requested by another NGO or it's not available anymore.");
+        }
+
+        donation.setStatus(DonationStatus.REQUESTED);
+        donation.setNgo(ngo);
+        donationRepository.save(donation);
     }
 }

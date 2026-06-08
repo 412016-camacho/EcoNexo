@@ -12,4 +12,5 @@ public interface NgoService {
     Ngo save(Ngo ngo);
     boolean existsEmail(String email);
     NgoResponseDTO getProfileByEmail(String email);
+
 }

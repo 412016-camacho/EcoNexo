@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -81,5 +82,18 @@ public class DonationController {
     })
     public ResponseEntity<List<DonationSummaryResponseDTO>> getAvailableDonations(){
         return new ResponseEntity<>(this.donationService.getAvailableDonationsSummary(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('NGO')")
+    @PatchMapping("/{id}/request")
+    @Operation(summary = "Request a donation",
+            description = "Request a donation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Donation requested successfully")
+    })
+    public ResponseEntity<Void> requestDonation(@PathVariable Long id, Authentication authentication){
+        String email = authentication.getName();
+        this.donationService.requestDonation(id, email);
+        return ResponseEntity.noContent().build();
     }
 }
