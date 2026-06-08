@@ -1,8 +1,10 @@
 package com.tfi.Econexo.mappers;
 
-import com.tfi.Econexo.dto.donation.DonationItemRequestDTO;
-import com.tfi.Econexo.dto.donation.DonationItemResponseDTO;
+import com.tfi.Econexo.dto.donation.DonationItemSummaryDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
+import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.donation.item.DonationItemRequestDTO;
+import com.tfi.Econexo.dto.donation.item.DonationItemResponseDTO;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
 import com.tfi.Econexo.model.donation.catalog.Category;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-06-06T20:05:56-0300",
+    date = "2026-06-07T22:55:28-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -108,6 +110,53 @@ public class DonationMapperImpl implements DonationMapper {
         DonationItemResponseDTO donationItemResponseDTO = new DonationItemResponseDTO( id, productName, category, productType, quantity, unitOfMeasure, batchNumber, productionDate, expirationDate, deliveryTemperature, allergenWarning, observations, description );
 
         return donationItemResponseDTO;
+    }
+
+    @Override
+    public DonationSummaryResponseDTO toSummaryResponseDTO(Donation donation) {
+        if ( donation == null ) {
+            return null;
+        }
+
+        String businessName = null;
+        List<DonationItemSummaryDTO> items = null;
+        Long id = null;
+
+        businessName = donationDonorTradeName( donation );
+        items = donationItemListToDonationItemSummaryDTOList( donation.getDonationItems() );
+        id = donation.getId();
+
+        LocalDateTime expirationDate = donation.getMinExpirationDate();
+        boolean requiresRefrigeration = donation.isAnyItemRefrigerated();
+
+        DonationSummaryResponseDTO donationSummaryResponseDTO = new DonationSummaryResponseDTO( id, businessName, expirationDate, requiresRefrigeration, items );
+
+        return donationSummaryResponseDTO;
+    }
+
+    @Override
+    public DonationItemSummaryDTO toItemSummaryDTO(DonationItem item) {
+        if ( item == null ) {
+            return null;
+        }
+
+        String productName = null;
+        String unitOfMeasure = null;
+        Integer quantity = null;
+        String description = null;
+        String allergenWarning = null;
+
+        productName = itemProductName( item );
+        unitOfMeasure = itemUnitOfMeasureDescription( item );
+        if ( item.getQuantity() != null ) {
+            quantity = item.getQuantity().intValue();
+        }
+        description = item.getDescription();
+        allergenWarning = item.getAllergenWarning();
+
+        DonationItemSummaryDTO donationItemSummaryDTO = new DonationItemSummaryDTO( productName, quantity, unitOfMeasure, description, allergenWarning );
+
+        return donationItemSummaryDTO;
     }
 
     private String donationDonorTradeName(Donation donation) {
@@ -204,5 +253,18 @@ public class DonationMapperImpl implements DonationMapper {
             return null;
         }
         return description;
+    }
+
+    protected List<DonationItemSummaryDTO> donationItemListToDonationItemSummaryDTOList(List<DonationItem> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<DonationItemSummaryDTO> list1 = new ArrayList<DonationItemSummaryDTO>( list.size() );
+        for ( DonationItem donationItem : list ) {
+            list1.add( toItemSummaryDTO( donationItem ) );
+        }
+
+        return list1;
     }
 }

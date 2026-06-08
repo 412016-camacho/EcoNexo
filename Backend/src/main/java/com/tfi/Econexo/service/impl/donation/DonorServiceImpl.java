@@ -1,8 +1,11 @@
 package com.tfi.Econexo.service.impl.donation;
 
+import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
+import com.tfi.Econexo.mappers.DonorMapper;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.repository.donation.DonorRepository;
 import com.tfi.Econexo.service.donation.DonorService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import java.util.Optional;
 public class DonorServiceImpl implements DonorService {
 
     private final DonorRepository donorRepository;
+    private final DonorMapper donorMapper;
 
 
     @Override
@@ -33,5 +37,14 @@ public class DonorServiceImpl implements DonorService {
     @Override
     public Optional<Donor> findByUserEmail(String email) {
         return donorRepository.findByUser_Email(email);
+    }
+
+    @Override
+    public DonorResponseDTO getProfileByEmail(String email) {
+
+        Donor donor = donorRepository.findByUser_Email(email)
+                .orElseThrow(() -> new EntityNotFoundException("Donor not found"));
+
+        return donorMapper.toResponseDTO(donor);
     }
 }

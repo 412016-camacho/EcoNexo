@@ -1,7 +1,7 @@
 package com.tfi.Econexo.controller.donation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tfi.Econexo.dto.donation.DonationItemRequestDTO;
+import com.tfi.Econexo.dto.donation.item.DonationItemRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.catalog.Product;

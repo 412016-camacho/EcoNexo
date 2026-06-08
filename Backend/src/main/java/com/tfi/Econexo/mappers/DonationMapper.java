@@ -1,7 +1,9 @@
 package com.tfi.Econexo.mappers;
 
-import com.tfi.Econexo.dto.donation.DonationItemRequestDTO;
-import com.tfi.Econexo.dto.donation.DonationItemResponseDTO;
+import com.tfi.Econexo.dto.donation.DonationItemSummaryDTO;
+import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.donation.item.DonationItemRequestDTO;
+import com.tfi.Econexo.dto.donation.item.DonationItemResponseDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
@@ -28,4 +30,14 @@ public interface DonationMapper {
     @Mapping(target = "productType", source = "product.productType.description")
     @Mapping(source = "unitOfMeasure.description", target = "unitOfMeasure")
     DonationItemResponseDTO toItemResponseDTO(DonationItem item);
+
+    @Mapping(target = "businessName", source = "donor.tradeName")
+    @Mapping(target = "items", source = "donationItems")
+    @Mapping(target = "expirationDate", expression = "java(donation.getMinExpirationDate())")
+    @Mapping(target = "requiresRefrigeration", expression = "java(donation.isAnyItemRefrigerated())")
+    DonationSummaryResponseDTO toSummaryResponseDTO(Donation donation);
+
+    @Mapping(target = "productName", source = "product.name")
+    @Mapping(target = "unitOfMeasure", source = "unitOfMeasure.description")
+    DonationItemSummaryDTO toItemSummaryDTO(DonationItem item);
 }

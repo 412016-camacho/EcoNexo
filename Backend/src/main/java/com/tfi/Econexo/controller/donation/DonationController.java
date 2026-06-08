@@ -2,6 +2,7 @@ package com.tfi.Econexo.controller.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
+import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
 import com.tfi.Econexo.dto.donation.catalog.CategoryDTO;
 import com.tfi.Econexo.dto.donation.catalog.ProductDTO;
 import com.tfi.Econexo.dto.donation.catalog.UnitOfMeasureDTO;
@@ -15,6 +16,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +31,7 @@ public class DonationController {
     private final DonationService donationService;
     private final CatalogService catalogService;
 
+    @PreAuthorize("hasRole('DONOR')")
     @PostMapping("/donate")
     @Operation(summary = "Create a new donation",
             description = "Create a new donation")
@@ -67,5 +71,29 @@ public class DonationController {
     })
     public ResponseEntity<List<UnitOfMeasureDTO>> getUnits() {
         return new ResponseEntity<>(this.catalogService.getAllUnits(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('NGO')")
+    @GetMapping("/available")
+    @Operation(summary = "Get available donations for NGOs",
+            description = "Retrieve a list of available donation items, ordered by expiration date ascending")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List retrieved successfully")
+    })
+    public ResponseEntity<List<DonationSummaryResponseDTO>> getAvailableDonations(){
+        return new ResponseEntity<>(this.donationService.getAvailableDonationsSummary(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('NGO')")
+    @PatchMapping("/{id}/request")
+    @Operation(summary = "Request a donation",
+            description = "Request a donation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Donation requested successfully")
+    })
+    public ResponseEntity<Void> requestDonation(@PathVariable Long id, Authentication authentication){
+        String email = authentication.getName();
+        this.donationService.requestDonation(id, email);
+        return ResponseEntity.noContent().build();
     }
 }
