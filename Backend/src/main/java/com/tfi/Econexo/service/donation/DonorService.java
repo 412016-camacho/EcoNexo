@@ -1,5 +1,6 @@
 package com.tfi.Econexo.service.donation;
 
+import com.tfi.Econexo.dto.auth.donor.DonorResponseDTO;
 import com.tfi.Econexo.model.donation.donor.Donor;
 
 import java.util.Optional;
@@ -9,4 +10,5 @@ public interface DonorService {
     Boolean existsEmail(String email);
     Donor save(Donor donor);
     Optional<Donor> findByUserEmail(String email);
+    DonorResponseDTO getProfileByEmail(String email);
 }
