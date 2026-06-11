@@ -22,8 +22,6 @@ import {AvailableDonationsComponent} from './available-donations/available-donat
     FooterComponent,
     NavbarComponent,
     AsyncPipe,
-    DatePipe,
-    DonationConfirmModalComponent,
     AvailableDonationsComponent
   ],
   templateUrl: './dashboard-ngo.component.html',

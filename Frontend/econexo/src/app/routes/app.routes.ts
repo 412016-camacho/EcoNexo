@@ -8,6 +8,7 @@ import {DashboardNgoComponent} from '../features/dashboard/dashboard-ngo/dashboa
 import {DriverFormComponent} from '../features/auth/driver-form/driver-form.component';
 import {DashboardDriverComponent} from '../features/dashboard/dashboard-driver/dashboard-driver.component';
 import {DonationFormComponent} from '../features/donations/donation-form/donation-form.component';
+import {DashboardAdminComponent} from '../features/dashboard/dashboard-admin/dashboard-admin.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'dashboard/donor', component: DashboardDonorComponent },
   { path: 'dashboard/ngo', component: DashboardNgoComponent },
   { path: 'dashboard/driver', component: DashboardDriverComponent },
+  { path: 'dashboard/admin', component: DashboardAdminComponent },
   { path: 'donations/form', component: DonationFormComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }

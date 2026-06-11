@@ -11,6 +11,7 @@ import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
 import {AuthLoginRequest, AuthResponse} from '../../shared/models/login.model';
 import {NgoRegistrationDTO, NgoResponseDTO, NgoTypeLookup} from '../../shared/models/ngo.model';
 import {DriverRegistrationDTO, DriverResponse} from '../../shared/models/driver.model';
+import {UserAdminResponse} from '../../shared/models/admin.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  private currentUserSubject = new BehaviorSubject<DonorResponse | NgoResponseDTO | DriverResponse | null>(null);
+  private currentUserSubject = new BehaviorSubject<DonorResponse | NgoResponseDTO | DriverResponse | UserAdminResponse | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
   /**
