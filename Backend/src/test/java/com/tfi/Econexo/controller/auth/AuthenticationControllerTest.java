@@ -19,11 +19,8 @@ import com.tfi.Econexo.service.DriverService;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
 import com.tfi.Econexo.service.auth.*;
-import com.tfi.Econexo.service.impl.auth.AuthServiceImpl;
 import com.tfi.Econexo.service.impl.auth.UserDetailsServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AuthenticationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuditorAwareImpl.class))
-class AuthenticationControllerTest {
+class   AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
