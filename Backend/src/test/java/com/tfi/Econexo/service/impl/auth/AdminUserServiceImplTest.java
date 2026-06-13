@@ -11,6 +11,7 @@ import com.tfi.Econexo.repository.auth.UserRepository;
 import com.tfi.Econexo.repository.donation.DonorRepository;
 import com.tfi.Econexo.repository.logistics.DriverRepository;
 import com.tfi.Econexo.repository.ngo.NgoRepository;
+import com.tfi.Econexo.utils.notification.EmailService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ class AdminUserServiceImplTest {
     @Mock private NgoRepository ngoRepository;
     @Mock private DriverRepository driverRepository;
     @Mock private UserRepository userRepository;
+    @Mock private EmailService emailService;
 
     @InjectMocks private AdminUserServiceImpl adminUserServiceImpl;
 
@@ -52,12 +54,14 @@ class AdminUserServiceImplTest {
         donor = new Donor();
         donor.setTradeName("Hornito Santiagueño");
         donor.setUser(new UserSec("donor@mail.com", "llllllll", true, true, true, true, Set.of(new Role("DONOR", Set.of()))));
+        donor.getUser().setId(1L);
         donor.setCreatedDate(LocalDateTime.now().minusDays(5));
         donor.setStatus(RegistrationStatus.APPROVED);
 
         ngo = new Ngo();
         ngo.setNgoName("Caritas");
         ngo.setUser(new UserSec("ngo@mail.com", "llllllll", true, true, true, true, Set.of(new Role("NGO", Set.of()))));
+        ngo.getUser().setId(2L);
         ngo.setCreatedDate(LocalDateTime.now().minusDays(2));
         ngo.setStatus(RegistrationStatus.APPROVED);
 
@@ -65,6 +69,7 @@ class AdminUserServiceImplTest {
         driver.setFirstName("Max");
         driver.setLastName("Carrasco");
         driver.setUser(new UserSec("driver@mail.com", "llllllll", true, true, true, true, Set.of(new Role("DRIVER", Set.of()))));
+        driver.getUser().setId(3L);
         driver.setCreatedDate(LocalDateTime.now());
         driver.setStatus(RegistrationStatus.APPROVED);
     }
@@ -162,7 +167,56 @@ class AdminUserServiceImplTest {
 
      verify(donorRepository, never()).save(any());
     }
+    
+    @Test
+    public void testUpdateUserStatus_WhenApproved_ShouldTriggerEmail_Donor(){
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(donor.getUser()));
+        when(donorRepository.findByUser_Email(anyString())).thenReturn(Optional.of(donor));
 
+        adminUserServiceImpl.updateUserStatus(donor.getUser().getId(), RegistrationStatus.APPROVED);
+
+        assertEquals(RegistrationStatus.APPROVED, donor.getStatus());
+        verify(donorRepository, times(1)).save(donor);
+
+        verify(emailService, times(1)).sendApprovalEmail(donor.getUser().getEmail(), donor.getTradeName(), "DONOR");
+    }
+
+    @Test
+    public void testUpdateUserStatus_WhenApproved_ShouldTriggerEmail_Ngo(){
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(ngo.getUser()));
+        when(ngoRepository.findByUser_Email(anyString())).thenReturn(Optional.of(ngo));
+
+        adminUserServiceImpl.updateUserStatus(ngo.getUser().getId(), RegistrationStatus.APPROVED);
+
+        assertEquals(RegistrationStatus.APPROVED, ngo.getStatus());
+        verify(ngoRepository, times(1)).save(ngo);
+
+        verify(emailService, times(1)).sendApprovalEmail(ngo.getUser().getEmail(), ngo.getNgoName(), "NGO");
+    }
+
+    @Test
+    public void testUpdateUserStatus_WhenApproved_ShouldTriggerEmail_Driver(){
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(driver.getUser()));
+        when(driverRepository.findByUser_Email(anyString())).thenReturn(Optional.of(driver));
+
+        adminUserServiceImpl.updateUserStatus(driver.getUser().getId(), RegistrationStatus.APPROVED);
+
+        assertEquals(RegistrationStatus.APPROVED, driver.getStatus());
+        verify(driverRepository, times(1)).save(driver);
+
+        verify(emailService, times(1)).sendApprovalEmail(driver.getUser().getEmail(), driver.getFirstName() + " " + driver.getLastName(), "DRIVER");
+    }
+
+    @Test
+    public void testUpdateUserStatus_WhenRejected_ShouldNotSendEmail(){
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(donor.getUser()));
+        when(donorRepository.findByUser_Email(anyString())).thenReturn(Optional.of(donor));
+
+        adminUserServiceImpl.updateUserStatus(donor.getUser().getId(), RegistrationStatus.REJECTED);
+
+        verify(emailService, never()).sendApprovalEmail(any(), any(), any());
+
+    }
 
 
 }
