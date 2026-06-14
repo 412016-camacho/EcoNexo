@@ -12,14 +12,14 @@ import com.tfi.Econexo.exception.ConflictException;
 import com.tfi.Econexo.mappers.*;
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.auth.UserSec;
-import com.tfi.Econexo.model.donation.Donor;
+import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.enums.RegistrationStatus;
 import com.tfi.Econexo.model.location.Neighborhood;
 import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.model.logistics.Vehicle;
 import com.tfi.Econexo.model.logistics.VehicleType;
 import com.tfi.Econexo.model.ngo.Ngo;
-import com.tfi.Econexo.service.DonorService;
+import com.tfi.Econexo.service.donation.DonorService;
 import com.tfi.Econexo.service.DriverService;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
@@ -199,6 +199,8 @@ class AuthServiceImplTest {
                 true,
                 1000,
                 "AA123CC",
+                null,
+                null,
                 LocalDate.of(2029, 4,12)
         );
 

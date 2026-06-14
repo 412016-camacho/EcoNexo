@@ -1,4 +1,4 @@
-package com.tfi.Econexo.model.donation;
+package com.tfi.Econexo.model.donation.donor;
 
 import com.tfi.Econexo.model.enums.RegistrationStatus;
 import com.tfi.Econexo.model.auth.UserSec;

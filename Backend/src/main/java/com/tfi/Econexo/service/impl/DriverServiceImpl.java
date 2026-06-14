@@ -1,8 +1,11 @@
 package com.tfi.Econexo.service.impl;
 
+import com.tfi.Econexo.dto.auth.logistics.DriverResponseDTO;
+import com.tfi.Econexo.mappers.DriverMapper;
 import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.repository.logistics.DriverRepository;
 import com.tfi.Econexo.service.DriverService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import java.util.Optional;
 public class DriverServiceImpl implements DriverService {
 
     private final DriverRepository driverRepository;
+    private final DriverMapper driverMapper;
 
     @Override
     public Optional<Driver> findByTaxId(String taxId) {
@@ -22,5 +26,13 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public Driver save(Driver driver) {
         return driverRepository.save(driver);
+    }
+
+    @Override
+    public DriverResponseDTO getProfileByEmail(String email) {
+        Driver driver = driverRepository.findByUser_Email((email))
+                .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
+
+        return driverMapper.toResponseDTO(driver);
     }
 }

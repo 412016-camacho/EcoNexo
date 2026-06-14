@@ -19,11 +19,8 @@ import com.tfi.Econexo.service.DriverService;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
 import com.tfi.Econexo.service.auth.*;
-import com.tfi.Econexo.service.impl.auth.AuthServiceImpl;
 import com.tfi.Econexo.service.impl.auth.UserDetailsServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AuthenticationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuditorAwareImpl.class))
-class AuthenticationControllerTest {
+class   AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -78,6 +75,9 @@ class AuthenticationControllerTest {
 
     @MockitoBean
     private BlacklistedTokenService blacklistedTokenService;
+
+    @MockitoBean
+    private AdminUserService adminUserService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -235,7 +235,7 @@ class AuthenticationControllerTest {
                         String.valueOf(RegistrationStatus.PENDING), LocalDate.of(2027,5,30),
                         "Obispo Trejo", "440", "PB", "A", "Nueva Córdoba",
                         List.of(new VehicleResponseDTO(1L, VehicleType.CAR, true,
-                                1000, "AA123CC", LocalDate.of(2029, 4,12)))));
+                                1000, "AA123CC",null, null, LocalDate.of(2029, 4,12)))));
 
         mockMvc.perform(
                         post("/api/v1/auth/register/driver")

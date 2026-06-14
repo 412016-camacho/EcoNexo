@@ -38,7 +38,7 @@ public class Driver extends BaseEntity {
     @Column(name = "food_handler_certificate_expiration")
     private LocalDate foodHandlerCertificateExpiration;
 
-    @Column(name = "tax_identification", unique = true, nullable = false, length = 11)
+    @Column(name = "tax_id", unique = true, nullable = false, length = 11)
     private String taxId;
 
     @Column(name = "phone_number")

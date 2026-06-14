@@ -1,15 +1,16 @@
 import {Component, inject, Input} from '@angular/core';
 import {AuthService} from '../../../core/services/auth.service';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
+import {AsyncPipe} from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
-  imports: [],
+  imports: [AsyncPipe, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  private authService = inject(AuthService);
+  protected authService = inject(AuthService);
   private router = inject(Router);
 
   @Input() userName: string = '';
