@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-06-13T07:12:05-0300",
+    date = "2026-06-13T20:25:04-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -30,6 +30,9 @@ public class VehicleMapperImpl implements VehicleMapper {
         }
         vehicle.setVehicleType( vehicleDTO.vehicleType() );
         vehicle.setCapacityKg( vehicleDTO.capacityKg() );
+        vehicle.setDriversLicenseFrontUrl( vehicleDTO.driversLicenseFrontUrl() );
+        vehicle.setDriversLicenseBackUrl( vehicleDTO.driversLicenseBackUrl() );
+        vehicle.setDriversLicenseExpiration( vehicleDTO.driversLicenseExpiration() );
 
         return vehicle;
     }
@@ -45,6 +48,8 @@ public class VehicleMapperImpl implements VehicleMapper {
         Boolean hasRefrigeration = null;
         int capacityKg = 0;
         String numberPlate = null;
+        String driversLicenseFrontUrl = null;
+        String driversLicenseBackUrl = null;
         LocalDate driversLicenseExpiration = null;
 
         id = vehicle.getId();
@@ -52,9 +57,11 @@ public class VehicleMapperImpl implements VehicleMapper {
         hasRefrigeration = vehicle.isHasRefrigeration();
         capacityKg = vehicle.getCapacityKg();
         numberPlate = vehicle.getNumberPlate();
+        driversLicenseFrontUrl = vehicle.getDriversLicenseFrontUrl();
+        driversLicenseBackUrl = vehicle.getDriversLicenseBackUrl();
         driversLicenseExpiration = vehicle.getDriversLicenseExpiration();
 
-        VehicleResponseDTO vehicleResponseDTO = new VehicleResponseDTO( id, vehicleType, hasRefrigeration, capacityKg, numberPlate, driversLicenseExpiration );
+        VehicleResponseDTO vehicleResponseDTO = new VehicleResponseDTO( id, vehicleType, hasRefrigeration, capacityKg, numberPlate, driversLicenseFrontUrl, driversLicenseBackUrl, driversLicenseExpiration );
 
         return vehicleResponseDTO;
     }

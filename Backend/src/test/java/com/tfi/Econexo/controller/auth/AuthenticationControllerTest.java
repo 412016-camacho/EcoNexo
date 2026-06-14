@@ -76,6 +76,9 @@ class   AuthenticationControllerTest {
     @MockitoBean
     private BlacklistedTokenService blacklistedTokenService;
 
+    @MockitoBean
+    private AdminUserService adminUserService;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -232,7 +235,7 @@ class   AuthenticationControllerTest {
                         String.valueOf(RegistrationStatus.PENDING), LocalDate.of(2027,5,30),
                         "Obispo Trejo", "440", "PB", "A", "Nueva Córdoba",
                         List.of(new VehicleResponseDTO(1L, VehicleType.CAR, true,
-                                1000, "AA123CC", LocalDate.of(2029, 4,12)))));
+                                1000, "AA123CC",null, null, LocalDate.of(2029, 4,12)))));
 
         mockMvc.perform(
                         post("/api/v1/auth/register/driver")

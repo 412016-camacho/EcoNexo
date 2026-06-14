@@ -43,9 +43,9 @@ export interface VehicleRegistrationDTO {
   hasRefrigeration: boolean,
   capacityKg: number,
   numberPlate: string,
-  driverLicenseFrontUrl: string,
-  driverLicenseBackUrl: string,
-  driverLicenseExpiration: Date
+  driversLicenseFrontUrl: string,
+  driversLicenseBackUrl: string,
+  driversLicenseExpiration: Date
 }
 
 export interface VehicleResponseDTO {
@@ -54,7 +54,9 @@ export interface VehicleResponseDTO {
   hasRefrigeration: boolean,
   capacityKg: number,
   numberPlate: string,
-  driverLicenseExpiration: Date
+  driversLicenseFrontUrl: string,
+  driversLicenseBackUrl: string,
+  driversLicenseExpiration: Date
 }
 
 export type VehicleType = 'CAR' | 'TRUCK' | 'BICYCLE' | 'MOTORCYCLE' | 'KICK_SCOOTER' | 'PICKUP'
