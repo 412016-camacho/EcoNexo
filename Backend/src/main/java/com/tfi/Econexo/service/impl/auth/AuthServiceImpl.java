@@ -22,7 +22,7 @@ import com.tfi.Econexo.model.logistics.Vehicle;
 import com.tfi.Econexo.model.ngo.Ngo;
 import com.tfi.Econexo.repository.auth.PasswordResetTokenRepository;
 import com.tfi.Econexo.service.donation.DonorService;
-import com.tfi.Econexo.service.DriverService;
+import com.tfi.Econexo.service.logistics.DriverService;
 import com.tfi.Econexo.service.NeighborhoodService;
 import com.tfi.Econexo.service.NgoService;
 import com.tfi.Econexo.service.auth.AuthService;
