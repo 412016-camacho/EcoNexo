@@ -1,13 +1,10 @@
 package com.tfi.Econexo.service.impl.logistics;
 
-import com.tfi.Econexo.dto.auth.logistics.DriverResponseDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
 import com.tfi.Econexo.mappers.DonationMapper;
-import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.enums.DonationStatus;
 import com.tfi.Econexo.model.logistics.Driver;
-import com.tfi.Econexo.service.auth.UserService;
 import com.tfi.Econexo.service.donation.DonationService;
 import com.tfi.Econexo.service.logistics.DriverService;
 import com.tfi.Econexo.service.logistics.LogisticsService;
