@@ -1,10 +1,10 @@
-package com.tfi.Econexo.service.impl;
+package com.tfi.Econexo.service.impl.logistics;
 
 import com.tfi.Econexo.dto.auth.logistics.DriverResponseDTO;
 import com.tfi.Econexo.mappers.DriverMapper;
 import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.repository.logistics.DriverRepository;
-import com.tfi.Econexo.service.DriverService;
+import com.tfi.Econexo.service.logistics.DriverService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,5 +34,10 @@ public class DriverServiceImpl implements DriverService {
                 .orElseThrow(() -> new EntityNotFoundException("Driver not found"));
 
         return driverMapper.toResponseDTO(driver);
+    }
+
+    @Override
+    public Optional<Driver> findEntityByEmail(String email) {
+        return driverRepository.findByUser_Email(email);
     }
 }

@@ -12,7 +12,6 @@ import com.tfi.Econexo.model.donation.catalog.UnitOfMeasure;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.enums.DonationStatus;
 import com.tfi.Econexo.model.ngo.Ngo;
-import com.tfi.Econexo.repository.donation.DonationItemRepository;
 import com.tfi.Econexo.repository.donation.DonationRepository;
 import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
 import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
@@ -39,7 +38,6 @@ public class DonationServiceImpl implements DonationService {
     private final DonorService donorService;
     private final ProductRepository productRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
-    private final DonationItemRepository donationItemRepository;
     private final NgoRepository ngoRepository;
 
     private final DonationMapper donationMapper;
@@ -116,5 +114,10 @@ public class DonationServiceImpl implements DonationService {
         donation.setStatus(DonationStatus.REQUESTED);
         donation.setNgo(ngo);
         donationRepository.save(donation);
+    }
+
+    @Override
+    public List<Donation> findAvailableTripsNearby(Point driverLocation, Long driverId, DonationStatus status) {
+        return donationRepository.findAvailableTripsNearby(driverLocation, driverId, status);
     }
 }

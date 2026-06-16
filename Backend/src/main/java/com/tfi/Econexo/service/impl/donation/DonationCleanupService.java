@@ -1,4 +1,4 @@
-package com.tfi.Econexo.service.impl;
+package com.tfi.Econexo.service.impl.donation;
 
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.enums.DonationStatus;

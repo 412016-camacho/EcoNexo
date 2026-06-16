@@ -9,13 +9,15 @@ import {DriverService} from '../../../core/services/driver.service';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {AvailableTripsComponent} from '../components/available-trips/available-trips.component';
 
 @Component({
   selector: 'app-dashboard-driver',
   imports: [
     NavbarComponent,
     FooterComponent,
-    AsyncPipe
+    AsyncPipe,
+    AvailableTripsComponent
   ],
   templateUrl: './dashboard-driver.component.html',
   styleUrl: './dashboard-driver.component.css'
