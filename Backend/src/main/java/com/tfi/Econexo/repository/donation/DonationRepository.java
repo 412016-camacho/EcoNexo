@@ -34,5 +34,6 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
             @Param("status") DonationStatus status
     );
 
+
 }
 

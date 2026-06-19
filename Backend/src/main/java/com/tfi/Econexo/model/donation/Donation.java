@@ -4,6 +4,7 @@ import com.tfi.Econexo.model.base.BaseEntity;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.enums.DonationStatus;
 import com.tfi.Econexo.model.logistics.Driver;
+import com.tfi.Econexo.model.logistics.Vehicle;
 import com.tfi.Econexo.model.ngo.Ngo;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,6 +44,10 @@ public class Donation extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")
     private Driver driver;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicle_id")
+    private Vehicle vehicle;
 
     @OneToMany(mappedBy = "donation", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<DonationItem> donationItems = new ArrayList<>();

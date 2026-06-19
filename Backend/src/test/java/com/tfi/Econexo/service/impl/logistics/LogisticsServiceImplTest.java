@@ -1,6 +1,8 @@
 package com.tfi.Econexo.service.impl.logistics;
 
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
+import com.tfi.Econexo.exception.TripNotAvailableException;
+import com.tfi.Econexo.exception.VehicleIncompatibleException;
 import com.tfi.Econexo.mappers.DonationMapper;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.model.donation.Donation;
@@ -11,6 +13,7 @@ import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.model.logistics.Vehicle;
 import com.tfi.Econexo.service.donation.DonationService;
 import com.tfi.Econexo.service.logistics.DriverService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +30,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LogisticsServiceImplTest {
@@ -42,6 +45,7 @@ class LogisticsServiceImplTest {
     Vehicle vehicle;
     Donation donation;
     DonationItem donationItem;
+    Product product;
 
     @BeforeEach
     void setUp() {
@@ -58,7 +62,7 @@ class LogisticsServiceImplTest {
         donation = new Donation();
         donation.setId(1L);
         donationItem = new DonationItem();
-        Product product = new Product();
+        product = new Product();
         donationItem.setProduct(product);
         donationItem.setDonation(donation);
     }
@@ -161,6 +165,113 @@ class LogisticsServiceImplTest {
         List<DonationResponseDTO> result = logisticsServiceImpl.getAvailableTripsNearby("driver@example.com", 0.0, 0.0);
 
         assertEquals(0, result.size());
+    }
+
+    @Test
+    public void acceptTrip_HappyPath() {
+        donation.setStatus(DonationStatus.REQUESTED);
+
+        vehicle.setId(10L);
+        vehicle.setCapacityKg(100);
+        vehicle.setHasRefrigeration(true);
+        driver.setVehicles(List.of(vehicle));
+
+        donationItem.setQuantity(20.0);
+        donationItem.getProduct().setRequiresRefrigeration(false);
+        donation.setDonationItems(List.of(donationItem));
+
+        when(donationService.findByIdDonation(anyLong())).thenReturn(Optional.of(donation));
+        when(driverService.findEntityByEmail(anyString())).thenReturn(Optional.of(driver));
+
+        logisticsServiceImpl.acceptTrip(donation.getId(), "driver@example.com", vehicle.getId());
+
+        verify(donationService, times(1)).save(donation);
+        assertEquals(DonationStatus.ASSIGNED, donation.getStatus());
+        assertEquals(driver, donation.getDriver());
+        assertEquals(vehicle, donation.getVehicle());
+    }
+
+    @Test
+    public void acceptTrip_StatusNotAvailable(){
+        donation.setStatus(DonationStatus.ASSIGNED);
+
+        when(donationService.findByIdDonation(anyLong())).thenReturn(Optional.of(donation));
+
+        assertThrows(TripNotAvailableException.class, () -> {
+            logisticsServiceImpl.acceptTrip(donation.getId(), "driver@example.com", vehicle.getId());
+        });
+        verify(donationService, never()).save(donation);
+    }
+
+    @Test
+    public void acceptTrip_VehicleNotBelongsToDriver(){
+        donation.setStatus(DonationStatus.REQUESTED);
+
+        Vehicle mockVehicle = new Vehicle();
+        mockVehicle.setId(5L);
+
+        when(donationService.findByIdDonation(anyLong())).thenReturn(Optional.of(donation));
+        when(driverService.findEntityByEmail(anyString())).thenReturn(Optional.of(driver));
+
+        assertThrows(VehicleIncompatibleException.class, () -> {
+            logisticsServiceImpl.acceptTrip(donation.getId(), "driver@example.com", mockVehicle.getId());
+        });
+    }
+
+    @Test
+    public void acceptTrip_WeightExceeded(){
+        donation.setStatus(DonationStatus.REQUESTED);
+
+        vehicle.setId(10L);
+        vehicle.setCapacityKg(50);
+        vehicle.setHasRefrigeration(true);
+        driver.setVehicles(List.of(vehicle));
+
+        DonationItem newItem = new DonationItem();
+        newItem.setProduct(product);
+        newItem.setQuantity(50.0);
+        newItem.getProduct().setRequiresRefrigeration(false);
+
+        donationItem.setQuantity(50.0);
+        donationItem.getProduct().setRequiresRefrigeration(false);
+        donation.setDonationItems(List.of(donationItem, newItem));
+
+        when(donationService.findByIdDonation(anyLong())).thenReturn(Optional.of(donation));
+        when(driverService.findEntityByEmail(anyString())).thenReturn(Optional.of(driver));
+
+        assertThrows(VehicleIncompatibleException.class, () -> {
+            logisticsServiceImpl.acceptTrip(donation.getId(), "driver@example.com", vehicle.getId());
+        });
+    }
+
+    @Test
+    public void acceptTrip_TemperatureChainBroken(){
+        donation.setStatus(DonationStatus.REQUESTED);
+
+        vehicle.setId(10L);
+        vehicle.setCapacityKg(100);
+        vehicle.setHasRefrigeration(false);
+        driver.setVehicles(List.of(vehicle));
+
+        donationItem.setQuantity(20.0);
+        donationItem.getProduct().setRequiresRefrigeration(true);
+        donation.setDonationItems(List.of(donationItem));
+
+        when(donationService.findByIdDonation(anyLong())).thenReturn(Optional.of(donation));
+        when(driverService.findEntityByEmail(anyString())).thenReturn(Optional.of(driver));
+
+        assertThrows(VehicleIncompatibleException.class, () -> {
+            logisticsServiceImpl.acceptTrip(donation.getId(), "driver@example.com", vehicle.getId());
+        });
+    }
+
+    @Test
+    public void acceptTrip_DonationNotFound(){
+        when(donationService.findByIdDonation(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            logisticsServiceImpl.acceptTrip(donation.getId(), "driver@example.com", vehicle.getId());
+        });
     }
 
 }
