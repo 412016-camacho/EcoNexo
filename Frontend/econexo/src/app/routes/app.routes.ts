@@ -12,6 +12,7 @@ import {DashboardAdminComponent} from '../features/dashboard/dashboard-admin/das
 import {ForgotPasswordComponent} from '../features/auth/login/forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from '../features/auth/login/reset-password/reset-password.component';
 import {AvailableTripsComponent} from '../features/dashboard/components/available-trips/available-trips.component';
+import {ActiveTripComponent} from '../features/dashboard/components/active-trip/active-trip.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -26,6 +27,7 @@ export const routes: Routes = [
   { path: 'dashboard/driver', component: DashboardDriverComponent },
   { path: 'dashboard/admin', component: DashboardAdminComponent },
   { path: 'dashboard/driver/available-trips', component: AvailableTripsComponent },
+  { path: 'dashboard/trips/:id', component: ActiveTripComponent },
   { path: 'donations/form', component: DonationFormComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
