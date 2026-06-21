@@ -26,8 +26,17 @@ public record DonationResponseDTO(
         @Schema(description = "Created at", example = "2023-01-01T00:00:00")
         LocalDateTime createdAt,
 
-        @Schema(description = "Business name", example = "Business Name")
+        @Schema(description = "Business name", example = "Panadería La Docta")
         String businessName,
+
+        @Schema(description = "Name of the NGO of destiny", example = "Banco de Alimentos CBA")
+        String ngoName,
+
+        @Schema(description = "Pickup address", example = "Av. Independencia 550")
+        String pickupAddress,
+
+        @Schema(description = "Drop off address", example = "Calle Lima 300")
+        String dropOffAddress,
 
         @Schema(description = "Donor latitude", example = "40.7128")
         Double pickupLat,
