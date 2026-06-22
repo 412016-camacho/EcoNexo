@@ -5,8 +5,10 @@ import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
 import com.tfi.Econexo.dto.donation.item.DonationItemRequestDTO;
 import com.tfi.Econexo.dto.donation.item.DonationItemResponseDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
+import com.tfi.Econexo.dto.logistics.DriverSummaryDTO;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
+import com.tfi.Econexo.model.enums.DonationStatus;
 import com.tfi.Econexo.utils.GeometryUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -25,6 +27,7 @@ public interface DonationMapper {
     @Mapping(target = "pickupLng", expression = "java(GeometryUtils.getLongitude(donation.getDonor() != null ? donation.getDonor().getLocation() : null))")
     @Mapping(target = "dropOffLat", expression = "java(GeometryUtils.getLatitude(donation.getNgo() != null ? donation.getNgo().getLocation() : null))")
     @Mapping(target = "dropOffLng", expression = "java(GeometryUtils.getLongitude(donation.getNgo() != null ? donation.getNgo().getLocation() : null))")
+    @Mapping(target = "driverInfo", expression = "java(mapDriverInfo(donation))")
     DonationResponseDTO toResponseDTO(Donation donation);
 
     @Mapping(target = "id", ignore = true)
@@ -48,4 +51,23 @@ public interface DonationMapper {
     @Mapping(target = "productName", source = "product.name")
     @Mapping(target = "unitOfMeasure", source = "unitOfMeasure.description")
     DonationItemSummaryDTO toItemSummaryDTO(DonationItem item);
+
+    default DriverSummaryDTO mapDriverInfo(Donation donation){
+        if(donation.getStatus() == DonationStatus.AVAILABLE ||
+        donation.getStatus() == DonationStatus.REQUESTED ||
+        donation.getDriver() == null){
+            return null;
+        }
+
+        var driver = donation.getDriver();
+        var vehicleList = driver.getVehicles();
+        var vehicle = (vehicleList != null && !vehicleList.isEmpty()) ? vehicleList.get(0) : null;
+
+        return new DriverSummaryDTO(
+                driver.getFirstName(),
+                driver.getLastName(),
+                vehicle != null && vehicle.getNumberPlate() != null ? vehicle.getNumberPlate() : "Without number plate",
+                vehicle != null && vehicle.getVehicleType() != null ? vehicle.getVehicleType().name() : "Don't specified"
+        );
+    }
 }
