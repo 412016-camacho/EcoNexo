@@ -13,6 +13,7 @@ import {ForgotPasswordComponent} from '../features/auth/login/forgot-password/fo
 import {ResetPasswordComponent} from '../features/auth/login/reset-password/reset-password.component';
 import {AvailableTripsComponent} from '../features/dashboard/components/available-trips/available-trips.component';
 import {ActiveTripComponent} from '../features/dashboard/components/active-trip/active-trip.component';
+import {DonationsDetailComponent} from '../shared/components/donations-detail/donations-detail.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -22,6 +23,7 @@ export const routes: Routes = [
   { path: 'register/donor', component: DonorFormComponent },
   { path: 'register/driver', component: DriverFormComponent },
   { path: 'register/ngo', component: NgoFormComponent },
+  { path: 'dashboard/donations/:id', component: DonationsDetailComponent},
   { path: 'dashboard/donor', component: DashboardDonorComponent },
   { path: 'dashboard/ngo', component: DashboardNgoComponent },
   { path: 'dashboard/driver', component: DashboardDriverComponent },
