@@ -97,7 +97,7 @@ public class DonationController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('DONOR', 'NGO', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('DONOR', 'NGO', 'DRIVER', 'ADMIN')")
     @GetMapping("/me")
     @Operation(summary = "Get my donations",
             description = "Retrieve a list of donations associated with the authenticated user (either as a Donor or an NGO)")

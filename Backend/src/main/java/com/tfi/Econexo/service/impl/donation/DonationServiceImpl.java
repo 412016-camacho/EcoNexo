@@ -152,11 +152,8 @@ public class DonationServiceImpl implements DonationService {
        Donation donation = donationRepository.findById(donationId)
                .orElseThrow(() -> new EntityNotFoundException("Donation not found"));
 
-       if(donation.getStatus() == DonationStatus.AVAILABLE ||
-          donation.getStatus() == DonationStatus.CANCELED ||
-          donation.getStatus() == DonationStatus.REJECTED ||
-          donation.getStatus() == DonationStatus.DELIVERED ){
-           throw new IllegalStateException("The trip can not be canceled in its current state: " + donation.getStatus());
+       if(donation.getStatus() != DonationStatus.ASSIGNED){
+           throw new IllegalStateException("The trip can not be canceled if it's ASSIGEND. Current state: " + donation.getStatus());
        }
 
        donation.setStatus(DonationStatus.REQUESTED);
