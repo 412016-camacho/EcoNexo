@@ -120,4 +120,24 @@ public class DonationController {
     public ResponseEntity<DonationResponseDTO> getDonation(@PathVariable Long id){
         return new ResponseEntity<>(this.donationService.getDonation(id), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyRole('DONOR', 'ADMIN')")
+    @PostMapping("/{id}/cancel")
+    @Operation(summary = "Cancel a donation", description = "Allows a donor to completely cancel a donation if it hasn't been picked up yet.")
+    public ResponseEntity<Void> cancelDonation(@PathVariable Long id, Authentication authentication){
+        String email = authentication.getName();
+        this.donationService.cancelDonationByDonor(id, email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('DONOR', 'ADMIN')")
+    @PostMapping("/{id}/reject-driver")
+    @Operation(summary = "Reject assigned driver", description = "Allows a donor to reject a driver (e.g., lack of thermal equipment) and return the donation to the network.")
+    public ResponseEntity<Void> rejectDriver(@PathVariable Long id, Authentication authentication){
+        String email = authentication.getName();
+        this.donationService.rejectDriverByDonor(id, email);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
