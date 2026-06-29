@@ -1,6 +1,7 @@
 package com.tfi.Econexo.service.impl.logistics;
 
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
+import com.tfi.Econexo.dto.logistics.DriverDeliveryEvidenceDTO;
 import com.tfi.Econexo.exception.TripNotAvailableException;
 import com.tfi.Econexo.exception.VehicleIncompatibleException;
 import com.tfi.Econexo.mappers.DonationMapper;
@@ -9,10 +10,13 @@ import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
 import com.tfi.Econexo.model.donation.catalog.Product;
 import com.tfi.Econexo.model.enums.DonationStatus;
+import com.tfi.Econexo.model.logistics.DeliveryEvidence;
 import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.model.logistics.Vehicle;
+import com.tfi.Econexo.repository.logistics.DeliverEvidenceRepository;
 import com.tfi.Econexo.service.donation.DonationService;
 import com.tfi.Econexo.service.logistics.DriverService;
+import com.tfi.Econexo.service.upload.CloudinaryService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,8 +26,10 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +45,8 @@ class LogisticsServiceImplTest {
     @Mock DriverService driverService;
     @Mock DonationService donationService;
     @Mock DonationMapper donationMapper;
+    @Mock DeliverEvidenceRepository deliverEvidenceRepository;
+    @Mock CloudinaryService cloudinaryService;
 
     @InjectMocks LogisticsServiceImpl logisticsServiceImpl;
 
@@ -331,5 +339,33 @@ class LogisticsServiceImplTest {
         assertThrows(IllegalArgumentException.class, () -> {
             logisticsServiceImpl.updateTripStatus(tripId, DonationStatus.IN_TRANSIT.name(), "driver@example.com");
         });
+    }
+
+    @Test
+    void shouldRegisterEvidenceAndChangeStatusToPendingNgo() {
+        Long tripId = 1L;
+        String email = "driver@econexo.com";
+        DriverDeliveryEvidenceDTO dto = new DriverDeliveryEvidenceDTO(
+                4.5,
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        );
+
+        when(donationService.findByIdDonation(tripId)).thenReturn(Optional.of(donation));
+        donation.setDriver(driver);
+
+        try {
+            when(cloudinaryService.uploadFile(any(), anyString())).thenReturn("https://url-falsa.com/foto.jpg");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        when(deliverEvidenceRepository.findByDonationId(tripId)).thenReturn(Optional.empty());
+
+        logisticsServiceImpl.registerDriverDelivery(tripId, dto, "driver@example.com");
+
+        assertEquals(DonationStatus.DELIVERED_PENDING_NGO, donation.getStatus());
+        verify(deliverEvidenceRepository, times(1)).save(any(DeliveryEvidence.class));
+        verify(donationService, times(1)).save(donation);
     }
 }
