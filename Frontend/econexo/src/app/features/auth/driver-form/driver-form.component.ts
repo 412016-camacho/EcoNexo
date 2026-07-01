@@ -221,18 +221,31 @@ export class DriverFormComponent extends BaseFormComponent implements OnInit{
   private setupVehicleValidation() {
     const vehicleTypeControl = this.driverForm.get('vehicle.vehicleType');
     const plateControl = this.driverForm.get('vehicle.numberPlate');
+    const licenseFrontControl = this.driverForm.get('vehicle.driversLicenseFrontUrl');
+    const licenseBackControl = this.driverForm.get('vehicle.driversLicenseBackUrl');
     const licenseExpControl = this.driverForm.get('vehicle.driversLicenseExpiration');
 
     vehicleTypeControl?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(type => {
       if(type === 'BICYCLE' || type === 'KICK_SCOOTER'){
         plateControl?.clearValidators();
         licenseExpControl?.clearValidators();
+        licenseFrontControl?.clearValidators();
+        licenseBackControl?.clearValidators();
+
+        plateControl?.setValue(null);
+        licenseExpControl?.setValue(null);
+        licenseFrontControl?.setValue(null);
+        licenseBackControl?.setValue(null);
       }else{
         plateControl?.setValidators([Validators.required]);
         licenseExpControl?.setValidators([Validators.required]);
+        licenseFrontControl?.setValidators([Validators.required]);
+        licenseBackControl?.setValidators([Validators.required]);
       }
       plateControl?.updateValueAndValidity();
       licenseExpControl?.updateValueAndValidity();
+      licenseFrontControl?.updateValueAndValidity();
+      licenseBackControl?.updateValueAndValidity();
     })
   }
 

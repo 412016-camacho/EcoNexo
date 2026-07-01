@@ -1,17 +1,22 @@
 package com.tfi.Econexo.service.impl.logistics;
 
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
+import com.tfi.Econexo.dto.logistics.DriverDeliveryEvidenceDTO;
 import com.tfi.Econexo.exception.TripNotAvailableException;
 import com.tfi.Econexo.exception.VehicleIncompatibleException;
 import com.tfi.Econexo.mappers.DonationMapper;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
 import com.tfi.Econexo.model.enums.DonationStatus;
+import com.tfi.Econexo.model.logistics.DeliveryEvidence;
 import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.model.logistics.Vehicle;
+import com.tfi.Econexo.repository.logistics.DeliverEvidenceRepository;
 import com.tfi.Econexo.service.donation.DonationService;
 import com.tfi.Econexo.service.logistics.DriverService;
 import com.tfi.Econexo.service.logistics.LogisticsService;
+import com.tfi.Econexo.service.upload.CloudinaryService;
+import com.tfi.Econexo.utils.cloudinary.Base64ToMultipartConverter;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +26,9 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +38,8 @@ public class LogisticsServiceImpl implements LogisticsService {
 
     private final DriverService driverService;
     private final DonationService donationService;
+    private final CloudinaryService cloudinaryService;
+    private final DeliverEvidenceRepository deliverEvidenceRepository;
     private final DonationMapper donationMapper;
 
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
@@ -51,6 +60,7 @@ public class LogisticsServiceImpl implements LogisticsService {
     @Transactional
     @Override
     public void acceptTrip(Long donationId, String driverEmail, Long vehicleId) {
+
         Donation donation = donationService.findByIdDonation(donationId)
                 .orElseThrow(() -> new EntityNotFoundException("Donation not found"));
 
@@ -109,14 +119,63 @@ public class LogisticsServiceImpl implements LogisticsService {
             throw new IllegalArgumentException("The trip must be IN_TRANSIT before being finished.");
         }
 
-        if(donation.getStatus() == DonationStatus.IN_TRANSIT && requestedStatus != DonationStatus.DELIVERED){
-            throw new IllegalArgumentException("An IN_TRANSIT trip can only be DELIVERED.");
+        if(donation.getStatus() == DonationStatus.IN_TRANSIT && requestedStatus != DonationStatus.DELIVERED_PENDING_NGO){
+            throw new IllegalArgumentException("An IN_TRANSIT trip can only be DELIVERED_PENDING_NGO.");
         }
 
         if(donation.getStatus() == DonationStatus.DELIVERED){
-            throw new IllegalArgumentException("An DELIVERED trip can only be DELIVERED and can not be modified.");
+            if(donation.getDeliveryEvidence() == null || donation.getDeliveryEvidence().getNgoSignatureUrl() == null){
+                throw new IllegalArgumentException("Can't mark as DELIVERED without NGO signature.");
+            }
+            throw new IllegalArgumentException("An DELIVERED trip cannot be modified.");
         }
 
         donation.setStatus(requestedStatus);
+    }
+
+    @Transactional
+    @Override
+    public void registerDriverDelivery(Long tripId, DriverDeliveryEvidenceDTO dto, String driverEmail) {
+        Donation donation = donationService.findByIdDonation(tripId)
+                .orElseThrow(() -> new EntityNotFoundException("Trip not found."));
+
+        if(donation.getDriver() == null ||!donation.getDriver().getUser().getEmail().equals(driverEmail)){
+            throw new AccessDeniedException("You are not authorized to update this trip.");
+        }
+
+        if(donation.getStatus() != DonationStatus.ASSIGNED){
+            throw new IllegalArgumentException("Pickup evidence can only be registered when the trip is ASSIGNED. Current state: " + donation.getStatus());
+        }
+
+        if(dto.temperature() < -30 || dto.temperature() > 50){
+            throw new IllegalArgumentException("Temperature out of the bromatologic range.");
+        }
+
+        //Cloudinary
+        MultipartFile signatureFile = Base64ToMultipartConverter.convert(dto.driverSignatureUrl(), "signature_" + tripId);
+        MultipartFile photoFile = Base64ToMultipartConverter.convert(dto.evidencePhotoUrl(), "photo_" + tripId);
+
+        String signatureUrl;
+        String photoUrl;
+
+        try {
+            signatureUrl = cloudinaryService.uploadFile(signatureFile, "evidence/signatures");
+            photoUrl = cloudinaryService.uploadFile(photoFile, "evidence/photos");
+        } catch (IOException e) {
+            throw new RuntimeException("Error uploading files to Cloudinary", e);
+        }
+
+        DeliveryEvidence evidence = deliverEvidenceRepository.findByDonationId(tripId)
+                .orElse(new DeliveryEvidence());
+
+        evidence.setDonation(donation);
+        evidence.setTemperature(dto.temperature());
+        evidence.setEvidencePhotoUrl(photoUrl);
+        evidence.setDriverSignatureUrl(signatureUrl);
+
+        deliverEvidenceRepository.save(evidence);
+
+        donation.setStatus(DonationStatus.IN_TRANSIT);
+        donationService.save(donation);
     }
 }
