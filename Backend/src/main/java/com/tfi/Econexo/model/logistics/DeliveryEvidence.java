@@ -21,7 +21,7 @@ public class DeliveryEvidence extends BaseEntity {
     @Column(name = "driver_signature_url", nullable = false)
     private String driverSignatureUrl;
 
-    @Column(name = "ngo_signature_url", nullable = false)
+    @Column(name = "ngo_signature_url")
     private String ngoSignatureUrl;
 
     @Column(name = "evidence_photo_url")
@@ -30,7 +30,7 @@ public class DeliveryEvidence extends BaseEntity {
     @Column(name = "disclaimer_accepted")
     private boolean disclaimerAccepted;
 
-    @Column(name = "accepted_at", nullable = false)
+    @Column(name = "accepted_at")
     private LocalDateTime acceptedAt;
 
     @OneToOne(fetch = FetchType.LAZY)
