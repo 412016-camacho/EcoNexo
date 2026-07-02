@@ -1,6 +1,6 @@
 package com.tfi.Econexo.service.impl;
 
-import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.donation.summary.DonationSummaryResponseDTO;
 import com.tfi.Econexo.dto.donation.item.DonationItemRequestDTO;
 import com.tfi.Econexo.dto.donation.item.DonationItemResponseDTO;
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;

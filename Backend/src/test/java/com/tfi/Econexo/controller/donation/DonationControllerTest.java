@@ -1,7 +1,7 @@
 package com.tfi.Econexo.controller.donation;
 
 import com.tfi.Econexo.config.AuditorAwareImpl;
-import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.donation.summary.DonationSummaryResponseDTO;
 import com.tfi.Econexo.model.auth.Role;
 import com.tfi.Econexo.model.auth.UserSec;
 import com.tfi.Econexo.security.config.SecurityConfig;
@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
