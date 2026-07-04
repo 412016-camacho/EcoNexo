@@ -5,16 +5,21 @@ import com.tfi.Econexo.dto.donation.DonationResponseDTO;
 import com.tfi.Econexo.dto.reception.DonationItemReceptionDTO;
 import com.tfi.Econexo.dto.reception.ReceivedDonationDTO;
 import com.tfi.Econexo.dto.donation.summary.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.reception.ReceivedItemDTO;
 import com.tfi.Econexo.exception.ConflictException;
 import com.tfi.Econexo.mappers.DonationMapper;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
+import com.tfi.Econexo.model.donation.ReceivedItem;
+import com.tfi.Econexo.model.donation.ReceptionRecord;
 import com.tfi.Econexo.model.donation.catalog.Product;
 import com.tfi.Econexo.model.donation.catalog.UnitOfMeasure;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.enums.DonationStatus;
 import com.tfi.Econexo.model.ngo.Ngo;
+import com.tfi.Econexo.repository.donation.DonationItemRepository;
 import com.tfi.Econexo.repository.donation.DonationRepository;
+import com.tfi.Econexo.repository.donation.ReceptionRecordRepository;
 import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
 import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
 import com.tfi.Econexo.repository.ngo.NgoRepository;
@@ -39,6 +44,8 @@ import java.util.Optional;
 public class DonationServiceImpl implements DonationService {
 
     private final DonationRepository donationRepository;
+    private final DonationItemRepository donationItemRepository;
+    private final ReceptionRecordRepository receptionRecordRepository;
     private final GeocodingService geocodingService;
     private final DonorService donorService;
     private final ProductRepository productRepository;
@@ -276,6 +283,21 @@ public class DonationServiceImpl implements DonationService {
         if(dto.comments() != null){
             donation.setReceptionComments(dto.comments());
         }
+
+        ReceptionRecord record = new ReceptionRecord();
+        record.setDonation(donation);
+
+        List<ReceivedItem> receivedItems = dto.receivedItems().stream().map(dtoItem -> {
+            DonationItem originalItem = donationItemRepository.findById(dtoItem.itemId())
+                            .orElseThrow(()-> new EntityNotFoundException("Item not found"));
+            ReceivedItem received = new ReceivedItem();
+            received.setDonationItem(originalItem);
+            received.setReceivedQuantity(dtoItem.receivedQuantity());
+            return received;
+        }).toList();
+
+        record.setItems(receivedItems);
+        receptionRecordRepository.save(record);
 
         donation.setStatus(DonationStatus.DELIVERED);
         donationRepository.save(donation);
