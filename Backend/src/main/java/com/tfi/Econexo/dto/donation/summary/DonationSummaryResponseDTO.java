@@ -1,4 +1,4 @@
-package com.tfi.Econexo.dto.donation;
+package com.tfi.Econexo.dto.donation.summary;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

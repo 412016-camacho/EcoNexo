@@ -2,7 +2,9 @@ package com.tfi.Econexo.service.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
-import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.reception.DonationItemReceptionDTO;
+import com.tfi.Econexo.dto.reception.ReceivedDonationDTO;
+import com.tfi.Econexo.dto.donation.summary.DonationSummaryResponseDTO;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.enums.DonationStatus;
 import org.locationtech.jts.geom.Point;
@@ -30,4 +32,6 @@ public interface DonationService {
     void cancelDonationByDonor(Long donationId, String donorEmail);
     void rejectDriverByDonor(Long donationId, String donorEmail);
     void cancelDonationByNgo(Long donationId, String ngoEmail);
+    void receiveDonation(Long donationId, ReceivedDonationDTO dto);
+    List<DonationItemReceptionDTO> getDonationItems(Long id);
 }

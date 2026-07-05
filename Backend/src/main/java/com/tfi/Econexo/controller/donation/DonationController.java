@@ -2,10 +2,13 @@ package com.tfi.Econexo.controller.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
-import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.donation.summary.DonationSummaryResponseDTO;
 import com.tfi.Econexo.dto.donation.catalog.CategoryDTO;
 import com.tfi.Econexo.dto.donation.catalog.ProductDTO;
 import com.tfi.Econexo.dto.donation.catalog.UnitOfMeasureDTO;
+import com.tfi.Econexo.dto.reception.DonationItemReceptionDTO;
+import com.tfi.Econexo.dto.reception.ReceivedDonationDTO;
+import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.service.donation.CatalogService;
 import com.tfi.Econexo.service.donation.DonationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -145,6 +148,24 @@ public class DonationController {
     public ResponseEntity<Void> cancelDonationByNGO(@PathVariable Long id, Authentication authentication){
         String email = authentication.getName();
         this.donationService.cancelDonationByNgo(id, email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('NGO', 'ADMIN')")
+    @GetMapping("/{id}/items")
+    @Operation(summary = "Get donation items", description = "Retrieve a list of donation items associated with the donation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List retrieved successfully")
+    })
+    public ResponseEntity<List<DonationItemReceptionDTO>> getDonationItems(@PathVariable Long id){
+        return new ResponseEntity<>(this.donationService.getDonationItems(id), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('NGO', 'ADMIN')")
+    @PostMapping("/{id}/receive")
+    @Operation(summary = "Confirm donation reception", description = "Allows an NGO to receive a donation after it has been picked up by a driver.")
+    public ResponseEntity<Void> receiveDonation(@PathVariable Long id, @RequestBody ReceivedDonationDTO dto){
+        this.donationService.receiveDonation(id, dto);
         return ResponseEntity.noContent().build();
     }
 

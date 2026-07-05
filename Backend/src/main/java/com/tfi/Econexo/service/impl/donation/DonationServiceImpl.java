@@ -2,17 +2,24 @@ package com.tfi.Econexo.service.impl.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
-import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.reception.DonationItemReceptionDTO;
+import com.tfi.Econexo.dto.reception.ReceivedDonationDTO;
+import com.tfi.Econexo.dto.donation.summary.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.reception.ReceivedItemDTO;
 import com.tfi.Econexo.exception.ConflictException;
 import com.tfi.Econexo.mappers.DonationMapper;
 import com.tfi.Econexo.model.donation.Donation;
 import com.tfi.Econexo.model.donation.DonationItem;
+import com.tfi.Econexo.model.donation.ReceivedItem;
+import com.tfi.Econexo.model.donation.ReceptionRecord;
 import com.tfi.Econexo.model.donation.catalog.Product;
 import com.tfi.Econexo.model.donation.catalog.UnitOfMeasure;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.enums.DonationStatus;
 import com.tfi.Econexo.model.ngo.Ngo;
+import com.tfi.Econexo.repository.donation.DonationItemRepository;
 import com.tfi.Econexo.repository.donation.DonationRepository;
+import com.tfi.Econexo.repository.donation.ReceptionRecordRepository;
 import com.tfi.Econexo.repository.donation.catalog.ProductRepository;
 import com.tfi.Econexo.repository.donation.catalog.UnitOfMeasureRepository;
 import com.tfi.Econexo.repository.ngo.NgoRepository;
@@ -37,6 +44,8 @@ import java.util.Optional;
 public class DonationServiceImpl implements DonationService {
 
     private final DonationRepository donationRepository;
+    private final DonationItemRepository donationItemRepository;
+    private final ReceptionRecordRepository receptionRecordRepository;
     private final GeocodingService geocodingService;
     private final DonorService donorService;
     private final ProductRepository productRepository;
@@ -260,4 +269,52 @@ public class DonationServiceImpl implements DonationService {
         donation.setNgo(null);
         donationRepository.save(donation);
     }
+
+    @Transactional
+    @Override
+    public void receiveDonation(Long donationId, ReceivedDonationDTO dto) {
+        Donation donation = donationRepository.findById(donationId)
+                .orElseThrow(() -> new EntityNotFoundException("Donation not found"));
+
+        if(donation.getStatus() != DonationStatus.DELIVERED_PENDING_NGO){
+            throw new IllegalStateException("Only DELIVERED_PENDING_NGO donations can be received");
+        }
+
+        if(dto.comments() != null){
+            donation.setReceptionComments(dto.comments());
+        }
+
+        ReceptionRecord record = new ReceptionRecord();
+        record.setDonation(donation);
+
+        List<ReceivedItem> receivedItems = dto.receivedItems().stream().map(dtoItem -> {
+            DonationItem originalItem = donationItemRepository.findById(dtoItem.itemId())
+                            .orElseThrow(()-> new EntityNotFoundException("Item not found"));
+            ReceivedItem received = new ReceivedItem();
+            received.setDonationItem(originalItem);
+            received.setReceivedQuantity(dtoItem.receivedQuantity());
+            return received;
+        }).toList();
+
+        record.setItems(receivedItems);
+        receptionRecordRepository.save(record);
+
+        donation.setStatus(DonationStatus.DELIVERED);
+        donationRepository.save(donation);
+    }
+
+    @Override
+    public List<DonationItemReceptionDTO> getDonationItems(Long id){
+        Donation donation = this.donationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Donation not found"));
+        return donation.getDonationItems().stream()
+                .map(item -> new DonationItemReceptionDTO(
+                        item.getId(),
+                        item.getProduct().getName(),
+                        item.getQuantity(),
+                        item.getUnitOfMeasure().getDescription(),
+                        item.getDescription()))
+                .toList();
+    }
+
 }
