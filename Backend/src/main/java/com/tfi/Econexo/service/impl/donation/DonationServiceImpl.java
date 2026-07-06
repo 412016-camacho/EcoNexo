@@ -26,7 +26,9 @@ import com.tfi.Econexo.repository.ngo.NgoRepository;
 import com.tfi.Econexo.service.donation.DonationService;
 import com.tfi.Econexo.service.donation.DonorService;
 import com.tfi.Econexo.service.impl.GeocodingService;
+import com.tfi.Econexo.service.upload.CloudinaryService;
 import com.tfi.Econexo.utils.GeometryUtils;
+import com.tfi.Econexo.utils.cloudinary.Base64ToMultipartConverter;
 import com.tfi.Econexo.utils.notification.NotificationService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -35,7 +37,10 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +57,7 @@ public class DonationServiceImpl implements DonationService {
     private final UnitOfMeasureRepository unitOfMeasureRepository;
     private final NgoRepository ngoRepository;
     private final NotificationService notificationService;
+    private final CloudinaryService cloudinaryService;
 
     private final DonationMapper donationMapper;
 
@@ -272,7 +278,7 @@ public class DonationServiceImpl implements DonationService {
 
     @Transactional
     @Override
-    public void receiveDonation(Long donationId, ReceivedDonationDTO dto) {
+    public void receiveDonation(Long donationId, ReceivedDonationDTO dto, String email) {
         Donation donation = donationRepository.findById(donationId)
                 .orElseThrow(() -> new EntityNotFoundException("Donation not found"));
 
@@ -282,6 +288,15 @@ public class DonationServiceImpl implements DonationService {
 
         if(dto.comments() != null){
             donation.setReceptionComments(dto.comments());
+        }
+
+        MultipartFile signatureFile = Base64ToMultipartConverter.convert(dto.signatureUrl(), "ngo_signature_" + donationId);
+        String signatureUrl;
+
+        try {
+            signatureUrl = cloudinaryService.uploadFile(signatureFile, "reception/signatures");
+        } catch (IOException e) {
+            throw new RuntimeException("Error uploading signature to Cloudinary", e);
         }
 
         ReceptionRecord record = new ReceptionRecord();
@@ -297,6 +312,11 @@ public class DonationServiceImpl implements DonationService {
         }).toList();
 
         record.setItems(receivedItems);
+        record.setAcceptedDisclaimer(dto.acceptedDisclaimer());
+        record.setSignatureUrl(signatureUrl);
+        record.setAcceptanceTimestamp(LocalDateTime.now());
+        record.setReceivedByEmail(email);
+
         receptionRecordRepository.save(record);
 
         donation.setStatus(DonationStatus.DELIVERED);
