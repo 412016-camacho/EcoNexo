@@ -47,6 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
                             .pending("http://localhost:4200/donations/pending")
                             .failure("http://localhost:4200/donations/failure")
                             .build())
+                    // TODO: Habilitar autoReturn una vez configurado entorno de producción.
                     //.autoReturn("approved")
                     .metadata(Map.of("ngo_id", String.valueOf(dto.ngoId())))
                     .build();
