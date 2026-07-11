@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -42,6 +41,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             PreferenceRequest request = PreferenceRequest.builder()
                     .items(Collections.singletonList(itemRequest))
+                    .externalReference(String.valueOf(dto.donationId()))
                     .backUrls(PreferenceBackUrlsRequest.builder()
                             .success("http://localhost:4200/donations/success")
                             .pending("http://localhost:4200/donations/pending")
