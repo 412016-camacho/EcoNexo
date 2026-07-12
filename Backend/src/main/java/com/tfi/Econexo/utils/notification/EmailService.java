@@ -8,4 +8,5 @@ public interface EmailService {
 
     void sendGenericNotification(String toEmail, String subject, String message);
 
+    void sendCertificateEmail(String toEmail, String subject, String body, byte[] pdfBytes, String fileName);
 }

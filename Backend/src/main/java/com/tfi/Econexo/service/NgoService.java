@@ -3,6 +3,7 @@ package com.tfi.Econexo.service;
 import com.tfi.Econexo.dto.auth.ngo.NgoResponseDTO;
 import com.tfi.Econexo.model.ngo.Ngo;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NgoService {
@@ -12,5 +13,5 @@ public interface NgoService {
     Ngo save(Ngo ngo);
     boolean existsEmail(String email);
     NgoResponseDTO getProfileByEmail(String email);
-
+    List<NgoResponseDTO> getActiveNgos();
 }

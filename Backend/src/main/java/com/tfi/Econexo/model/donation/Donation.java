@@ -3,6 +3,7 @@ package com.tfi.Econexo.model.donation;
 import com.tfi.Econexo.model.base.BaseEntity;
 import com.tfi.Econexo.model.donation.donor.Donor;
 import com.tfi.Econexo.model.enums.DonationStatus;
+import com.tfi.Econexo.model.logistics.DeliveryEvidence;
 import com.tfi.Econexo.model.logistics.Driver;
 import com.tfi.Econexo.model.logistics.Vehicle;
 import com.tfi.Econexo.model.ngo.Ngo;
@@ -51,6 +52,13 @@ public class Donation extends BaseEntity {
 
     @OneToMany(mappedBy = "donation", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<DonationItem> donationItems = new ArrayList<>();
+
+    @OneToOne(mappedBy = "donation", cascade = {CascadeType.ALL})
+    @JoinColumn(name = "delivery_evidence_id", unique = true)
+    private DeliveryEvidence deliveryEvidence;
+
+    @Column(name = "reception_comments")
+    private String receptionComments;
 
     public LocalDateTime getMinExpirationDate(){
         if(donationItems == null || donationItems.isEmpty()) return null;

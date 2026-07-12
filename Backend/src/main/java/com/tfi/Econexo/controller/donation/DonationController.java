@@ -2,10 +2,14 @@ package com.tfi.Econexo.controller.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
-import com.tfi.Econexo.dto.donation.DonationSummaryResponseDTO;
+import com.tfi.Econexo.dto.donation.summary.DonationSummaryResponseDTO;
 import com.tfi.Econexo.dto.donation.catalog.CategoryDTO;
 import com.tfi.Econexo.dto.donation.catalog.ProductDTO;
 import com.tfi.Econexo.dto.donation.catalog.UnitOfMeasureDTO;
+import com.tfi.Econexo.dto.reception.DonationItemReceptionDTO;
+import com.tfi.Econexo.dto.reception.ReceivedDonationDTO;
+import com.tfi.Econexo.model.donation.Donation;
+import com.tfi.Econexo.model.donation.ReceptionRecord;
 import com.tfi.Econexo.service.donation.CatalogService;
 import com.tfi.Econexo.service.donation.DonationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +18,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -146,6 +152,37 @@ public class DonationController {
         String email = authentication.getName();
         this.donationService.cancelDonationByNgo(id, email);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('NGO', 'ADMIN')")
+    @GetMapping("/{id}/items")
+    @Operation(summary = "Get donation items", description = "Retrieve a list of donation items associated with the donation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List retrieved successfully")
+    })
+    public ResponseEntity<List<DonationItemReceptionDTO>> getDonationItems(@PathVariable Long id){
+        return new ResponseEntity<>(this.donationService.getDonationItems(id), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('NGO', 'ADMIN')")
+    @PostMapping("/{id}/receive")
+    @Operation(summary = "Confirm donation reception", description = "Allows an NGO to receive a donation after it has been picked up by a driver.")
+    public ResponseEntity<Void> receiveDonation(@PathVariable Long id, @RequestBody ReceivedDonationDTO dto, Authentication authentication){
+        String email = authentication.getName();
+        this.donationService.receiveDonation(id, dto, email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('NGO', 'ADMIN', 'DONOR')")
+    @GetMapping("/{id}/certificate")
+    @Operation(summary = "Download donation certificate", description = "Download the certificate for a specific donation")
+    public ResponseEntity<byte[]> downloadCertificate(@PathVariable Long id){
+        System.out.println("Buscando certificado para donacion ID: " + id);
+        byte[] pdfContent = donationService.getCertificateBytes(id);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Certificado_EcoNexo_" + id + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfContent);
     }
 
 }
