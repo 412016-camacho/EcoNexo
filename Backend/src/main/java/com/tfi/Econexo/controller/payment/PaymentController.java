@@ -48,7 +48,7 @@ public class PaymentController {
 
     @GetMapping("/my-donations")
     @Operation(summary = "Get my donations", description = "Get my donations")
-    @PreAuthorize("hasRole('ROLE_NGO')")
+    @PreAuthorize("hasRole('NGO')")
     public ResponseEntity<Page<MoneyDonationDTO>> getMyDonations(
             Authentication authentication,
             @RequestParam(required = false) DonationStatus status,
