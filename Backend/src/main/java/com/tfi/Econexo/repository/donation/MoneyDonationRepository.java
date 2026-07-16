@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -22,5 +23,14 @@ public interface MoneyDonationRepository extends JpaRepository<MoneyDonation, Lo
 
     @Query("SELECT SUM(md.amount) FROM MoneyDonation md WHERE md.status = 'COMPLETED'")
     Double sumAllDonatedAmount();
+
+    @Query("SELECT SUM(m.amount) FROM MoneyDonation m WHERE m.ngo.user.email = :email")
+    Double sumMoneyReceivedByNgo(@Param("email") String email);
+
+    @Query("SELECT SUM(m.amount) FROM MoneyDonation m WHERE m.ngo.user.email = :email AND m.createdDate BETWEEN :start AND :end")
+    Double sumMoneyByNgoAndDateRange(@Param("email") String email, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT SUM(m.amount) FROM MoneyDonation m WHERE m.donor.user.email = :email AND m.createdDate BETWEEN :start AND :end")
+    Double sumMoneyByDonorAndDateRange(@Param("email") String email, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
 }
