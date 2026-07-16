@@ -2,15 +2,14 @@ package com.tfi.Econexo.service.impl.stats;
 
 import com.tfi.Econexo.dto.stats.*;
 import com.tfi.Econexo.model.donation.Donation;
+import com.tfi.Econexo.model.donation.DonationItem;
 import com.tfi.Econexo.repository.auth.UserRepository;
 import com.tfi.Econexo.repository.donation.DonationRepository;
-import com.tfi.Econexo.repository.donation.DonorRepository;
 import com.tfi.Econexo.repository.donation.MoneyDonationRepository;
-import com.tfi.Econexo.repository.logistics.DriverRepository;
-import com.tfi.Econexo.repository.ngo.NgoRepository;
 import com.tfi.Econexo.service.stats.ReportsService;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,9 +21,6 @@ public class ReportsServiceImpl implements ReportsService {
 
     private final DonationRepository donationRepository;
     private final MoneyDonationRepository moneyDonationRepository;
-    private final DriverRepository driverRepository;
-    private final NgoRepository ngoRepository;
-    private final DonorRepository donorRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -58,11 +54,23 @@ public class ReportsServiceImpl implements ReportsService {
         Double currentMonth = donationRepository.sumQuantityByNgoAndDateRange(email, startOfMonth, LocalDateTime.now());
         Double prevMonth = donationRepository.sumQuantityByNgoAndDateRange(email, startOfPrevMonth, startOfMonth);
 
+        List<Object[]> rawTopCategories = donationRepository.getTopCategoriesByNgo(email);
+        List<CategoryStatsDTO> topCategories = rawTopCategories.stream()
+                .map(obj -> new CategoryStatsDTO((String) obj[0], (Double) obj[1]))
+                .toList();
+
+        List<RecentDonationDTO> recentDonations = donationRepository.findRecentDonationsByNgo(email, PageRequest.of(0, 5))
+                .stream().map(d -> new RecentDonationDTO(d.getDonor().getTradeName(), d.getCreatedDate(), d.getDonationItems().stream().map(DonationItem::getQuantity).reduce(0.0, Double::sum)))
+                .toList();
+
         return new NgoStatsDTO(
                 totalKilos != null ? totalKilos : 0.0,
                 uniqueDonors != null ? uniqueDonors : 0L,
                 efficiency,
-                (currentMonth != null ? currentMonth : 0.0) - (prevMonth != null ? prevMonth : 0.0));
+                currentMonth != null ? currentMonth : 0.0,
+                prevMonth != null ? prevMonth : 0.0,
+                topCategories,
+                recentDonations);
     }
 
     @Override
