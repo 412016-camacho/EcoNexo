@@ -146,4 +146,7 @@ export class AvailableTripsComponent implements OnInit {
    })
   }
 
+  goToStats(){
+    this.router.navigate(['/reports']);
+  }
 }
