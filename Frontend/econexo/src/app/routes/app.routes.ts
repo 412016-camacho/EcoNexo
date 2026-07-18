@@ -21,6 +21,7 @@ import {DonationFailureComponent} from '../shared/components/donation-failure/do
 import {DonationPendingComponent} from '../shared/components/donation-pending/donation-pending.component';
 import {DashboardStatsComponent} from '../features/reports/dashboard-stats/dashboard-stats.component';
 import {FaqComponent} from '../features/legal/faq/faq.component';
+import {TermsComponent} from '../features/legal/terms/terms.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -45,6 +46,7 @@ export const routes: Routes = [
   { path: 'donations/failure', component: DonationFailureComponent },
   { path: 'reports', component: DashboardStatsComponent },
   { path: 'faq', component: FaqComponent },
+  { path: 'terms', component: TermsComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
 ];
