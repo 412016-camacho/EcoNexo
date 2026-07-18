@@ -2,6 +2,7 @@ package com.tfi.Econexo.service.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
+import com.tfi.Econexo.dto.donation.RejectionRequestDTO;
 import com.tfi.Econexo.dto.reception.DonationItemReceptionDTO;
 import com.tfi.Econexo.dto.reception.ReceivedDonationDTO;
 import com.tfi.Econexo.dto.donation.summary.DonationSummaryResponseDTO;
@@ -35,4 +36,5 @@ public interface DonationService {
     void receiveDonation(Long donationId, ReceivedDonationDTO dto, String email);
     List<DonationItemReceptionDTO> getDonationItems(Long id);
     byte[] getCertificateBytes(Long id);
+    void rejectDonationWithDetails(Long donationId, RejectionRequestDTO dto, String email);
 }

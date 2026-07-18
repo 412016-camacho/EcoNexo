@@ -2,6 +2,7 @@ package com.tfi.Econexo.controller.donation;
 
 import com.tfi.Econexo.dto.donation.DonationRequestDTO;
 import com.tfi.Econexo.dto.donation.DonationResponseDTO;
+import com.tfi.Econexo.dto.donation.RejectionRequestDTO;
 import com.tfi.Econexo.dto.donation.summary.DonationSummaryResponseDTO;
 import com.tfi.Econexo.dto.donation.catalog.CategoryDTO;
 import com.tfi.Econexo.dto.donation.catalog.ProductDTO;
@@ -183,6 +184,18 @@ public class DonationController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Certificado_EcoNexo_" + id + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfContent);
+    }
+
+    @PreAuthorize("hasAnyRole('DRIVER', 'ADMIN')")
+    @PostMapping("/{id}/reject-full")
+    @Operation(summary = "Reject donation with details", description = "Register rejection reason, date and evidence photo")
+    public ResponseEntity<Void> rejectDonationWithDetails(
+            @PathVariable Long id,
+            @RequestBody RejectionRequestDTO dto,
+            Authentication authentication) {
+
+        donationService.rejectDonationWithDetails(id, dto, authentication.getName());
+        return ResponseEntity.noContent().build();
     }
 
 }
