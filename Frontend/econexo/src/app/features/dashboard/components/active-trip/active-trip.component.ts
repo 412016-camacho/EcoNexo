@@ -142,7 +142,7 @@ export class ActiveTripComponent implements OnInit {
         this.isUpdatingStatus.set(false);
         this.toastr.error('Hubo un problema al actualizar el estado. Intentá nuevamente.', 'Error');
       }
-      });
+    });
   }
 
   ngOnInit() {
@@ -174,22 +174,22 @@ export class ActiveTripComponent implements OnInit {
   }
 
   confirmCancelTrip(){
-   const currentTrip = this.trip();
-   if(!currentTrip) return;
+    const currentTrip = this.trip();
+    if(!currentTrip) return;
 
-   this.isCanceling.set(true);
-   this.logisticsService.cancelTrip(currentTrip.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-     next: () => {
-       this.isCanceling.set(false);
-       this.closeCancelModal();
-       this.toastr.success('Viaje cancelado. La donación fue liberada para la red.', 'Viaje Liberado');
-       this.goBack();
-     },
-     error: (err) => {
-       this.isCanceling.set(false);
-       this.toastr.error('Hubo un problema al cancelar el viaje. Intentá nuevamente.', 'Error');
-     }
-   })
+    this.isCanceling.set(true);
+    this.logisticsService.cancelTrip(currentTrip.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.isCanceling.set(false);
+        this.closeCancelModal();
+        this.toastr.success('Viaje cancelado. La donación fue liberada para la red.', 'Viaje Liberado');
+        this.goBack();
+      },
+      error: (err) => {
+        this.isCanceling.set(false);
+        this.toastr.error('Hubo un problema al cancelar el viaje. Intentá nuevamente.', 'Error');
+      }
+    })
   }
 
   onEvidenceModalClose(success: boolean){
