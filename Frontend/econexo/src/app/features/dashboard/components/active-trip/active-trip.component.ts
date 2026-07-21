@@ -13,6 +13,7 @@ import {map} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 import {DeliveryEvidenceModalComponent} from '../delivery-evidence-modal/delivery-evidence-modal.component';
 import { QRCodeComponent } from 'angularx-qrcode';
+import {RejectionModalComponent} from '../rejection-modal/rejection-modal.component';
 
 @Component({
   selector: 'app-active-trip',
@@ -23,7 +24,8 @@ import { QRCodeComponent } from 'angularx-qrcode';
     FooterComponent,
     AsyncPipe,
     DeliveryEvidenceModalComponent,
-    QRCodeComponent
+    QRCodeComponent,
+    RejectionModalComponent
   ],
   templateUrl: './active-trip.component.html',
   styleUrl: './active-trip.component.css'
@@ -140,7 +142,7 @@ export class ActiveTripComponent implements OnInit {
         this.isUpdatingStatus.set(false);
         this.toastr.error('Hubo un problema al actualizar el estado. Intentá nuevamente.', 'Error');
       }
-      });
+    });
   }
 
   ngOnInit() {
@@ -172,41 +174,22 @@ export class ActiveTripComponent implements OnInit {
   }
 
   confirmCancelTrip(){
-   const currentTrip = this.trip();
-   if(!currentTrip) return;
-
-   this.isCanceling.set(true);
-   this.logisticsService.cancelTrip(currentTrip.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-     next: () => {
-       this.isCanceling.set(false);
-       this.closeCancelModal();
-       this.toastr.success('Viaje cancelado. La donación fue liberada para la red.', 'Viaje Liberado');
-       this.goBack();
-     },
-     error: (err) => {
-       this.isCanceling.set(false);
-       this.toastr.error('Hubo un problema al cancelar el viaje. Intentá nuevamente.', 'Error');
-     }
-   })
-  }
-
-  confirmRejectTrip(){
     const currentTrip = this.trip();
     if(!currentTrip) return;
 
     this.isCanceling.set(true);
-    this.logisticsService.rejectTrip(currentTrip.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.logisticsService.cancelTrip(currentTrip.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.isCanceling.set(false);
-        this.closeRejectModal();
-        this.toastr.info('Donación marcada como rechazada y fuera de circulación.', 'Mercadería no apta');
+        this.closeCancelModal();
+        this.toastr.success('Viaje cancelado. La donación fue liberada para la red.', 'Viaje Liberado');
         this.goBack();
       },
-      error: () => {
+      error: (err) => {
         this.isCanceling.set(false);
-        this.toastr.error('Error al rechazar la donación.')
+        this.toastr.error('Hubo un problema al cancelar el viaje. Intentá nuevamente.', 'Error');
       }
-    });
+    })
   }
 
   onEvidenceModalClose(success: boolean){
@@ -236,6 +219,13 @@ export class ActiveTripComponent implements OnInit {
         this.toastr.error('Error al notificar tu llegada.')
       }
     })
+  }
+
+  onRejectionModalClose(success: boolean) {
+    this.showRejectModal.set(false); // Cierra el modal
+    if (success) {
+      this.goBack();
+    }
   }
 
 }
