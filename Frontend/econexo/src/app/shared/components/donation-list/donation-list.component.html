@@ -1,6 +1,6 @@
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="flex flex-col gap-3 p-4 border-b border-gray-100 bg-white sm:flex-row sm:items-center sm:gap-2">
 
-  <div class="flex items-center gap-2 p-4 border-b border-gray-100 bg-white overflow-x-auto">
+  <div class="flex items-center gap-2 overflow-x-auto">
     <button
       (click)="setFilter('ACTIVE')"
       [class]="currentFilter() === 'ACTIVE' ? 'bg-[#eb5c0c] text-white shadow-md' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'"
@@ -19,20 +19,20 @@
       class="px-4 py-2 text-sm font-bold rounded-xl transition-all whitespace-nowrap">
       Todas
     </button>
-    <div class="ml-auto flex gap-2">
-      <button
-        (click)="openReportModal()"
-        class="flex items-center px-4 py-2 border border-[#eb5c0c] text-[#eb5c0c] rounded-lg hover:bg-[#fff5f0] transition-all shadow-sm font-bold text-sm">
-        <span class="mr-2">📄</span> Reportes
-      </button>
-      <button
-        (click)="goToStats()"
-        class="flex items-center px-4 py-2 border border-[#059669] text-[#059669] rounded-lg hover:bg-[#f0fdf4] transition-all shadow-sm font-bold text-sm">
-        <span class="mr-2">📊</span> Métricas
-      </button>
-
-    </div>
   </div>
+  <div class="flex gap-2 sm:ml-auto">
+    <button
+      (click)="openReportModal()"
+      class="flex-1 sm:flex-none flex items-center justify-center px-4 py-2 border border-[#eb5c0c] text-[#eb5c0c] rounded-lg hover:bg-[#fff5f0] transition-all shadow-sm font-bold text-sm whitespace-nowrap">
+      <span class="mr-2">📄</span> Reportes
+    </button>
+    <button
+      (click)="goToStats()"
+      class="flex-1 sm:flex-none flex items-center justify-center px-4 py-2 border border-[#059669] text-[#059669] rounded-lg hover:bg-[#f0fdf4] transition-all shadow-sm font-bold text-sm whitespace-nowrap">
+      <span class="mr-2">📊</span> Métricas
+    </button>
+  </div>
+</div>
 
   <div class="hidden lg:grid grid-cols-12 gap-4 p-4 bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
     <div class="col-span-4">Detalle de Carga</div>
@@ -51,7 +51,7 @@
         <div class="col-span-1 lg:col-span-4">
           <h3 class="font-bold text-gray-900 group-hover:text-[#eb5c0c] transition-colors">
             @if (donation.items && donation.items.length > 0) {
-              {{ donation.items[0].quantity }} {{ donation.items[0].unitOfMeasure }} de {{ donation.items[0].productName }}
+              {{ donation.items[0].quantity }} {{ donation.items[0].unitOfMeasure }} de {{ donation.items[0].description || donation.items[0].productName }}
 
               @if (donation.items.length > 1) {
                 <span class="text-gray-500 font-normal text-sm"> y {{ donation.items.length - 1 }} más...</span>
@@ -90,13 +90,13 @@
           {{ donation.createdAt | date:'dd/MM/yyyy HH:mm' }}
         </div>
 
-        <div class="col-span-1 lg:col-span-2">
+        <div class="lg:col-span-2">
           <span [class]="'px-3 py-1 text-xs font-bold rounded-lg border ' + getStatusClass(donation.status)">
             {{ donation.status | statusTranslate }}
           </span>
         </div>
 
-        <div class="col-span-1 flex justify-end items-center gap-2" (click)="$event.stopPropagation()">
+        <div class="flex items-center gap-2 lg:col-span-1 lg:justify-end" (click)="$event.stopPropagation()">
           <button [routerLink]="['/dashboard/donations', donation.id]"
                   title="Ver detalle"
                   class="p-2 text-gray-400 hover:text-[#161c28] cursor-pointer">
@@ -159,39 +159,57 @@
   </div>
 
   @if (filteredDonations().length > 0) {
-    <div class="flex items-center justify-between px-4 py-3 bg-gray-50 border-t border-gray-100 sm:px-6">
+    <div class="px-4 py-3 bg-gray-50 border-t border-gray-100 sm:px-6">
 
-      <div class="hidden sm:block">
+      <div class="hidden sm:flex items-center justify-between">
         <p class="text-sm text-gray-600">
           Mostrando <span class="font-bold text-gray-900">{{ startItem() }}</span> -
           <span class="font-bold text-gray-900">{{ endItem() }}</span> de
           <span class="font-bold text-gray-900">{{ filteredDonations().length }}</span> registros
         </p>
-      </div>
 
-      <div class="flex flex-1 justify-between sm:justify-end gap-2">
-        <button
-          (click)="prevPage()"
-          [disabled]="currentPage() === 1"
-          class="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm">
-          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-          Anterior
-        </button>
-
-        <div class="flex items-center px-2 text-sm font-bold text-gray-600 sm:hidden">
-          {{ currentPage() }} / {{ totalPages() }}
+        <div class="flex gap-2">
+          <button
+            (click)="prevPage()"
+            [disabled]="currentPage() === 1"
+            class="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            Anterior
+          </button>
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage() >= totalPages()"
+            class="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm">
+            Siguiente
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
         </div>
-
-        <button
-          (click)="nextPage()"
-          [disabled]="currentPage() >= totalPages()"
-          class="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm">
-          Siguiente
-          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-        </button>
       </div>
+
+      <div class="flex sm:hidden flex-col gap-2">
+        <div class="flex gap-2">
+          <button
+            (click)="prevPage()"
+            [disabled]="currentPage() === 1"
+            class="flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            Anterior
+          </button>
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage() >= totalPages()"
+            class="flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm">
+            Siguiente
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+        <p class="text-center text-xs font-bold text-gray-500">
+          Página {{ currentPage() }} de {{ totalPages() }}
+        </p>
+      </div>
+
     </div>
   }
   <app-report-modal (onConfirm)="onConfirmReport($event)"></app-report-modal>
-</div>
+
 
