@@ -26,11 +26,14 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-        <apx-chart [series]="heatmapOptions.series"
-                   [chart]="heatmapOptions.chart"
-                   [title]="heatmapOptions.title"
-                   [plotOptions]="heatmapOptions.plotOptions">
-        </apx-chart>
+          <apx-chart [series]="heatmapOptions.series"
+                     [chart]="heatmapOptions.chart"
+                     [title]="heatmapOptions.title"
+                     [dataLabels]="heatmapOptions.dataLabels"
+                     [xaxis]="heatmapOptions.xaxis"
+                     [responsive]="heatmapOptions.responsive"
+                     [plotOptions]="heatmapOptions.plotOptions">
+          </apx-chart>
       </div>
       <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
         <apx-chart [series]="funnelOptions.series"
