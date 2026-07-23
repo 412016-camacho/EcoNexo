@@ -1,5 +1,8 @@
 import {AfterViewInit, Component, DestroyRef, ElementRef, inject, Input, ViewChild} from '@angular/core';
 import * as L from 'leaflet';
+
+(window as any).L = L;
+
 import 'leaflet-routing-machine';
 
 @Component({
@@ -33,6 +36,7 @@ export class MapComponent implements AfterViewInit {
   private driverMarker: L.Marker | undefined;
 
   ngAfterViewInit() {
+    console.log('L.Routing disponible?', (L as any).Routing)
     this.fixLeafletIcons();
     this.initMap();
     this.trackDriverLocation();
