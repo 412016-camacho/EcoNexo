@@ -25,6 +25,7 @@ import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
 import com.tfi.Econexo.model.donation.ReceptionRecord;
 import com.tfi.Econexo.model.donation.donor.Donor;
+import com.tfi.Econexo.model.enums.DonationStatus;
 import com.tfi.Econexo.repository.donation.ReceptionRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class PdfReportSummaryServiceImpl implements  PdfReportSummaryService {
             LocalDateTime endDateTime = end.atTime(23, 59, 59);
 
             List<ReceptionRecord> records = receptionRecordRepository
-                    .findByDonation_Donor_IdAndAcceptanceTimestampBetween(donorId, startDateTime, endDateTime);
+                    .findByDonation_Donor_IdAndDonation_StatusAndAcceptanceTimestampBetween(donorId, DonationStatus.DELIVERED, startDateTime, endDateTime);
 
             if (records.isEmpty()) {
                 throw new RuntimeException("There are not donations for the selected period");
