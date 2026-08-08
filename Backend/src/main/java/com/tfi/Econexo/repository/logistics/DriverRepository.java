@@ -2,6 +2,7 @@ package com.tfi.Econexo.repository.logistics;
 
 import com.tfi.Econexo.model.logistics.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -12,4 +13,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     Optional<Driver> findByTaxId(String taxId);
 
     Optional<Driver> findByUser_Email(String userEmail);
+
+    @Query("SELECT COUNT(dr) FROM Driver dr WHERE dr.user.isActive = true")
+    long countActiveDrivers();
 }
