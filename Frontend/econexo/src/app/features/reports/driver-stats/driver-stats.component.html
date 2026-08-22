@@ -1,17 +1,36 @@
 @if (stats.totalDeliveries === 0) {
   <div class="text-center py-20 bg-white rounded-xl shadow-sm border border-dashed border-gray-300">
-    <p class="text-gray-500">Aún no has realizado viajes. ¡Mantente atento a la red!</p>
+    @if (hasComparison()) {
+      <p class="text-gray-500">No hay viajes en el período seleccionado.</p>
+    } @else {
+      <p class="text-gray-500">Aún no has realizado viajes. ¡Mantente atento a la red!</p>
+    }
   </div>
 } @else {
   <div class="space-y-6">
+
     <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
       <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
         <h3 class="text-xs uppercase text-gray-500 font-bold">Retiros Totales</h3>
         <p class="text-3xl font-bold text-[#161c28]">{{ stats.totalDeliveries }}</p>
+        @if (trend('totalDeliveriesChangePercent') !== null) {
+          <p class="text-xs font-bold mt-1 cursor-help"
+             [class]="trend('totalDeliveriesChangePercent')! >= 0 ? 'text-emerald-600' : 'text-red-600'"
+             [title]="'Período anterior: ' + stats.comparison!.totalDeliveriesPrev + ' → Actual: ' + stats.totalDeliveries">
+            {{ trend('totalDeliveriesChangePercent')! >= 0 ? '↑' : '↓' }} {{ displayTrend(trend('totalDeliveriesChangePercent')!) }}
+          </p>
+        }
       </div>
       <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
         <h3 class="text-xs uppercase text-gray-500 font-bold">Kilos Transportados</h3>
         <p class="text-3xl font-bold text-[#161c28]">{{ stats.totalKilosTransported | number:'1.1-2' }} kg</p>
+        @if (trend('totalKilosChangePercent') !== null) {
+          <p class="text-xs font-bold mt-1 cursor-help"
+             [class]="trend('totalKilosChangePercent')! >= 0 ? 'text-emerald-600' : 'text-red-600'"
+             [title]="'Período anterior: ' + (stats.comparison!.totalKilosPrev | number:'1.1-2') + ' kg → Actual: ' + (stats.totalKilosTransported | number:'1.1-2') + ' kg'">
+            {{ trend('totalKilosChangePercent')! >= 0 ? '↑' : '↓' }} {{ displayTrend(trend('totalKilosChangePercent')!) }}
+          </p>
+        }
       </div>
       <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
         <h3 class="text-xs uppercase text-gray-500 font-bold">Distancia Promedio</h3>
@@ -20,6 +39,13 @@
       <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
         <h3 class="text-xs uppercase text-gray-500 font-bold">Puntualidad</h3>
         <p class="text-3xl font-bold text-emerald-600">{{ stats.punctualityPercentage / 100 | percent:'1.0-0' }}</p>
+        @if (trend('punctualityDeltaPoints') !== null) {
+          <p class="text-xs font-bold mt-1 cursor-help"
+             [class]="trend('punctualityDeltaPoints')! >= 0 ? 'text-emerald-600' : 'text-red-600'"
+             [title]="'Período anterior: ' + (stats.comparison!.punctualityPrev | number:'1.0-0') + '% → Actual: ' + (stats.punctualityPercentage | number:'1.0-0') + '%'">
+            {{ trend('punctualityDeltaPoints')! >= 0 ? '↑' : '↓' }} {{ absValue(trend('punctualityDeltaPoints')!) | number:'1.0-1' }} pts
+          </p>
+        }
       </div>
       <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
         <h3 class="text-xs uppercase text-gray-500 font-bold">Carga Promedio</h3>
@@ -47,23 +73,79 @@
                    [chart]="trendOptions.chart"
                    [plotOptions]="trendOptions.plotOptions"
                    [labels]="trendOptions.labels"
+                   [fill]="trendOptions.fill"
                    [title]="trendOptions.title"
                    [subtitle]="trendOptions.subtitle">
         </apx-chart>
       </div>
     </div>
-    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm lg:col-span-1">
-      <apx-chart [series]="lineOptions.series"
-                 [chart]="lineOptions.chart"
-                 [xaxis]="lineOptions.xaxis"
-                 [yaxis]="lineOptions.yaxis"
-                 [responsive]="lineOptions.responsive"
-                 [title]="lineOptions.title"
-                 [stroke]="lineOptions.stroke"
-                 [colors]="lineOptions.colors"
-                 [markers]="lineOptions.markers">
-      </apx-chart>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <apx-chart [series]="lineOptions.series"
+                   [chart]="lineOptions.chart"
+                   [xaxis]="lineOptions.xaxis"
+                   [yaxis]="lineOptions.yaxis"
+                   [responsive]="lineOptions.responsive"
+                   [title]="lineOptions.title"
+                   [stroke]="lineOptions.stroke"
+                   [colors]="lineOptions.colors"
+                   [markers]="lineOptions.markers">
+        </apx-chart>
+      </div>
+      <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <apx-chart [series]="monthlyTrendOptions.series"
+                   [chart]="monthlyTrendOptions.chart"
+                   [xaxis]="monthlyTrendOptions.xaxis"
+                   [yaxis]="monthlyTrendOptions.yaxis"
+                   [stroke]="monthlyTrendOptions.stroke"
+                   [fill]="monthlyTrendOptions.fill"
+                   [colors]="monthlyTrendOptions.colors"
+                   [markers]="monthlyTrendOptions.markers"
+                   [tooltip]="monthlyTrendOptions.tooltip"
+                   [responsive]="monthlyTrendOptions.responsive"
+                   [title]="monthlyTrendOptions.title">
+        </apx-chart>
+      </div>
     </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <apx-chart [series]="funnelOptions.series"
+                   [chart]="funnelOptions.chart"
+                   [plotOptions]="funnelOptions.plotOptions"
+                   [dataLabels]="funnelOptions.dataLabels"
+                   [legend]="funnelOptions.legend"
+                   [responsive]="funnelOptions.responsive"
+                   [title]="funnelOptions.title">
+        </apx-chart>
+      </div>
+      <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <apx-chart [series]="topBusinessesOptions.series"
+                   [chart]="topBusinessesOptions.chart"
+                   [colors]="topBusinessesOptions.colors"
+                   [plotOptions]="topBusinessesOptions.plotOptions"
+                   [dataLabels]="topBusinessesOptions.dataLabels"
+                   [xaxis]="topBusinessesOptions.xaxis"
+                   [responsive]="topBusinessesOptions.responsive"
+                   [title]="topBusinessesOptions.title">
+        </apx-chart>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6">
+      <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <apx-chart [series]="topNgosOptions.series"
+                   [chart]="topNgosOptions.chart"
+                   [colors]="topNgosOptions.colors"
+                   [plotOptions]="topNgosOptions.plotOptions"
+                   [dataLabels]="topNgosOptions.dataLabels"
+                   [xaxis]="topNgosOptions.xaxis"
+                   [responsive]="topNgosOptions.responsive"
+                   [title]="topNgosOptions.title">
+        </apx-chart>
+      </div>
+    </div>
+
   </div>
 }
-
