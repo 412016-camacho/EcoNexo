@@ -1,5 +1,7 @@
 package com.tfi.Econexo.dto.stats;
 
+import com.tfi.Econexo.dto.stats.donor.CategoryStatsDTO;
+import com.tfi.Econexo.dto.stats.donor.RecentDonationDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
